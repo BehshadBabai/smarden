@@ -1,0 +1,71 @@
+import React from 'react';
+import { Button, Col, Layout, Row, Space, Typography, theme } from 'antd';
+import { MenuFoldOutlined, MenuUnfoldOutlined } from '@ant-design/icons';
+import useScreenSize from '../Hooks/useScreenSize';
+import MobileNav from './MobileNav';
+import { Constants } from '../Utilities/Constants';
+
+const { Header } = Layout;
+type CustomHeaderProps = {
+  collapsed: boolean;
+  setCollapsed: React.Dispatch<React.SetStateAction<boolean>>;
+};
+
+const CustomHeader: React.FC<CustomHeaderProps> = ({
+  collapsed,
+  setCollapsed
+}) => {
+  const {
+    token: { colorBgContainer }
+  } = theme.useToken();
+  const screenSize = useScreenSize();
+  return (
+    <Header style={{ padding: 0, background: colorBgContainer }}>
+      <Row
+        gutter={screenSize.width < Constants.breakpoint ? 10 : 0}
+        align={'middle'}
+      >
+        <Col>
+          <Button
+            type='text'
+            icon={collapsed ? <MenuUnfoldOutlined /> : <MenuFoldOutlined />}
+            onClick={() => setCollapsed(!collapsed)}
+            style={{
+              fontSize: '16px',
+              width: 64,
+              height: 64,
+              display: screenSize.width < Constants.breakpoint ? 'none' : ''
+            }}
+          />
+        </Col>
+        <Col>
+          <MobileNav />
+        </Col>
+        <Col flex={'auto'}>
+          <Row justify={'center'} align={'middle'}>
+            <Typography.Title
+              level={screenSize.width < Constants.breakpoint ? 3 : 2}
+              style={{
+                margin: 0
+              }}
+            >
+              SMARDEN
+            </Typography.Title>
+            <Typography.Text
+              style={{
+                display: 'flex',
+                alignItems: 'flex-end',
+                paddingTop: '20px',
+                paddingLeft: '10px'
+              }}
+            >
+              by BMNS
+            </Typography.Text>
+          </Row>
+        </Col>
+      </Row>
+    </Header>
+  );
+};
+
+export default CustomHeader;

@@ -20,6 +20,6 @@ module.exports = merge(commonConfig, {
   plugins: [
     new webpack.DefinePlugin({
       BUILD_ENV: JSON.stringify('development')
-    }),
+    })
   ]
 });
