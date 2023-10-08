@@ -91,8 +91,8 @@ const FeedBack: React.FC = () => (
           </Form.Item>
           <Form.Item wrapperCol={{ span: 24 }}>
             <Row>
-              <Col span={4}></Col>
-              <Col>
+              <Col xs={{ span: 0 }} sm={{ span: 5 }}></Col>
+              <Col xs={{ span: 24 }} sm={{ span: 19 }}>
                 <Button type='primary' htmlType='submit'>
                   Submit
                 </Button>
