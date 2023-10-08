@@ -1,13 +1,9 @@
 import { Button, Card, Col, Row, RowProps, Space, Typography } from 'antd';
 import React from 'react';
-import LanguageIcon from '@mui/icons-material/Language';
-import BadgeIcon from '@mui/icons-material/Badge';
-import CardMembershipIcon from '@mui/icons-material/CardMembership';
-import PlaceIcon from '@mui/icons-material/Place';
-import HomeIcon from '@mui/icons-material/Home';
-import LabelIcon from '@mui/icons-material/Label';
-import PhoneIcon from '@mui/icons-material/Phone';
-import EmailIcon from '@mui/icons-material/Email';
+import { MdBadge, MdPlace, MdLabel, MdEmail } from 'react-icons/md';
+import { PiCertificateFill } from 'react-icons/pi';
+import { AiFillHome, AiFillPhone } from 'react-icons/ai';
+import { FaGlobeAmericas } from 'react-icons/fa';
 import useScreenSize from '../../Hooks/useScreenSize';
 import { useAppDispatch } from '../../Redux/hooks';
 import { toggleHasAccount } from '../../Redux/features/account/account-slice';
@@ -54,7 +50,7 @@ const AccountRadio: React.FC = () => {
             >
               {' '}
               <Row {...cardRowProps}>
-                <BadgeIcon />
+                <MdBadge size={25} />
                 <Col>Full Name</Col>
               </Row>
             </Card.Grid>
@@ -64,8 +60,8 @@ const AccountRadio: React.FC = () => {
               }
             >
               <Row justify={'center'} align={'middle'} gutter={10}>
-                <CardMembershipIcon />
-                <Col>Dentistry Certificate</Col>
+                <PiCertificateFill size={25} />
+                <Col>Certificate</Col>
               </Row>
             </Card.Grid>
             <Card.Grid
@@ -74,7 +70,7 @@ const AccountRadio: React.FC = () => {
               }
             >
               <Row {...cardRowProps}>
-                <HomeIcon />
+                <AiFillHome size={23} />
                 <Col>Address</Col>
               </Row>
             </Card.Grid>
@@ -84,7 +80,7 @@ const AccountRadio: React.FC = () => {
               }
             >
               <Row {...cardRowProps}>
-                <LanguageIcon />
+                <FaGlobeAmericas size={23} />
                 <Col>Country</Col>
               </Row>
             </Card.Grid>
@@ -94,7 +90,7 @@ const AccountRadio: React.FC = () => {
               }
             >
               <Row {...cardRowProps}>
-                <PlaceIcon />
+                <MdPlace size={27} />
                 <Col>Province/State</Col>
               </Row>
             </Card.Grid>
@@ -104,7 +100,7 @@ const AccountRadio: React.FC = () => {
               }
             >
               <Row {...cardRowProps}>
-                <LabelIcon />
+                <MdLabel size={30} />
                 <Col>Postal Code</Col>
               </Row>
             </Card.Grid>
@@ -114,7 +110,7 @@ const AccountRadio: React.FC = () => {
               }
             >
               <Row {...cardRowProps}>
-                <PhoneIcon />
+                <AiFillPhone size={25} />
                 <Col>Phone Number</Col>
               </Row>
             </Card.Grid>
@@ -124,7 +120,7 @@ const AccountRadio: React.FC = () => {
               }
             >
               <Row {...cardRowProps}>
-                <EmailIcon />
+                <MdEmail size={25} />
                 <Col>Business Email</Col>
               </Row>
             </Card.Grid>
