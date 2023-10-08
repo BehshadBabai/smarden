@@ -4,8 +4,11 @@ interface AppState {
   route: string;
 }
 
+const splitArray = window.location.href.split('/');
+const path = splitArray[splitArray.length - 1] || '/';
+
 const initialState: AppState = {
-  route: '/'
+  route: path
 };
 
 const appSlice = createSlice({

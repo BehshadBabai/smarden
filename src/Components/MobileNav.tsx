@@ -95,11 +95,6 @@ const MobileNav: React.FC = () => {
               type: 'group'
             },
             {
-              key: 'dentistreg',
-              label: 'Register as a Dentist',
-              icon: <MedicineBoxOutlined />
-            },
-            {
               key: 'feedback',
               label: 'Feedback',
               icon: <SolutionOutlined />

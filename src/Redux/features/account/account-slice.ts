@@ -2,15 +2,32 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
 type AccountType = 'dentist' | 'patient';
 
+export type AccountInfo = {
+  name: string;
+  surname: string;
+  email: string;
+  phone: string;
+  gender?: string;
+  dob?: string;
+  address1?: string;
+  address2?: string;
+  country?: string;
+  province?: string;
+  postalCode?: string;
+};
+
 interface AccountState {
   type: AccountType;
   loggedIn: boolean;
+  hasAccount: boolean;
+  info?: AccountInfo;
 }
 
 const initialState: AccountState = {
   type: 'patient',
-  // change to false
-  loggedIn: true
+  // chnage to false at very end
+  loggedIn: true,
+  hasAccount: true
 };
 
 const accountSlice = createSlice({
@@ -26,9 +43,16 @@ const accountSlice = createSlice({
       } else {
         state.type = 'dentist';
       }
+    },
+    toggleHasAccount(state) {
+      state.hasAccount = !state.hasAccount;
+    },
+    changeInfo(state, action: PayloadAction<AccountInfo>) {
+      state.info = action.payload;
     }
   }
 });
 
-export const { toggleLoggedIn, toggleType } = accountSlice.actions;
+export const { toggleLoggedIn, toggleType, toggleHasAccount, changeInfo } =
+  accountSlice.actions;
 export default accountSlice.reducer;
