@@ -26,11 +26,10 @@ const dateFormat = 'YYYY-MM-DD';
 const PatientForm: React.FC = () => {
   const [form] = Form.useForm();
   const dispatch = useAppDispatch();
-  const accountInfo = useAppSelector((state) => state.account.info);
-  const isLoggedIn = useAppSelector((state) => state.account.loggedIn);
+  const account = useAppSelector((state) => state.account);
 
   const onFinish = (values: AccountInfo) => {
-    if (!isLoggedIn) {
+    if (!account.loggedIn) {
       // change db first and signup user
       dispatch(toggleHasAccount());
       dispatch(toggleLoggedIn());
@@ -56,11 +55,13 @@ const PatientForm: React.FC = () => {
       onFinish={onFinish}
       scrollToFirstError
       initialValues={
-        isLoggedIn
+        account.loggedIn
           ? {
-              ...accountInfo,
+              ...account?.info,
               prefix: 1,
-              dob: accountInfo?.dob ? dayjs(accountInfo.dob, dateFormat) : null
+              dob: account?.info?.dob
+                ? dayjs(account.info.dob, dateFormat)
+                : null
             }
           : { prefix: 1, province: 'ab' }
       }
@@ -71,7 +72,7 @@ const PatientForm: React.FC = () => {
             name='name'
             label='Name'
             rules={
-              isLoggedIn
+              account.loggedIn
                 ? []
                 : [
                     {
@@ -89,7 +90,7 @@ const PatientForm: React.FC = () => {
             name='surname'
             label='Surname'
             rules={
-              isLoggedIn
+              account.loggedIn
                 ? []
                 : [
                     {
@@ -104,7 +105,7 @@ const PatientForm: React.FC = () => {
         </Col>
       </Row>
 
-      {!isLoggedIn && (
+      {!account.loggedIn && (
         <>
           {' '}
           <Row gutter={10}>
@@ -253,7 +254,7 @@ const PatientForm: React.FC = () => {
       </Row>
 
       <Form.Item>
-        {!isLoggedIn ? (
+        {!account.loggedIn ? (
           <Row justify={'center'}>
             <Space direction='vertical' size={'large'}>
               <Row justify={'center'}>
