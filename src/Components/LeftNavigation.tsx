@@ -1,8 +1,7 @@
 import React from 'react';
-import { Layout, Menu } from 'antd';
+import { Avatar, Layout, Menu } from 'antd';
 import {
   CalendarOutlined,
-  MedicineBoxOutlined,
   QuestionCircleOutlined,
   SolutionOutlined,
   TeamOutlined,
@@ -11,6 +10,7 @@ import {
 import { useNavigate } from 'react-router-dom';
 import { useAppDispatch, useAppSelector } from '../Redux/hooks';
 import { changeRoute } from '../Redux/features/app/app-slice';
+import { getInitials } from '../Utilities/Util';
 
 type LeftNavProps = { collapsed: boolean; hidden: boolean };
 
@@ -21,8 +21,7 @@ const LeftNavigation: React.FC<LeftNavProps> = ({ collapsed, hidden }) => {
   const dispatch = useAppDispatch();
 
   const route = useAppSelector((state) => state.app.route);
-  const type = useAppSelector((state) => state.account.type);
-  const loggedIn = useAppSelector((state) => state.account.loggedIn);
+  const account = useAppSelector((state) => state.account);
 
   return (
     <Sider
@@ -34,6 +33,20 @@ const LeftNavigation: React.FC<LeftNavProps> = ({ collapsed, hidden }) => {
       collapsedWidth={100}
     >
       <div className='demo-logo-vertical' />
+      <div
+        style={{
+          height: '64px',
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center'
+        }}
+      >
+        <Avatar shape='circle' size={53} style={{ background: 'gray' }}>
+          {account.loggedIn
+            ? getInitials(account?.info?.name, account?.info?.surname)
+            : 'Login'}
+        </Avatar>
+      </div>
       <Menu
         theme='dark'
         mode='inline'
@@ -60,16 +73,16 @@ const LeftNavigation: React.FC<LeftNavProps> = ({ collapsed, hidden }) => {
             label: 'Account'
           },
           {
-            key: type === 'dentist' ? 'patients' : 'dentists',
+            key: account.type === 'dentist' ? 'patients' : 'dentists',
             icon: <TeamOutlined />,
-            label: type === 'dentist' ? 'Patients' : 'Dentists',
-            disabled: !loggedIn
+            label: account.type === 'dentist' ? 'Patients' : 'Dentists',
+            disabled: !account.loggedIn
           },
           {
             key: 'booking',
             icon: <CalendarOutlined />,
             label: 'Booking',
-            disabled: !loggedIn
+            disabled: !account.loggedIn
           },
           { type: 'divider', style: { background: 'white' } },
           {

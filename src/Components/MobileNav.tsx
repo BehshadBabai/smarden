@@ -1,30 +1,28 @@
 import React from 'react';
 import {
   CalendarOutlined,
-  MedicineBoxOutlined,
   MenuOutlined,
   QuestionCircleOutlined,
   SolutionOutlined,
   TeamOutlined,
   UserOutlined
 } from '@ant-design/icons';
-import { Button, Drawer, MenuProps } from 'antd';
+import { Avatar, Button, Drawer, MenuProps } from 'antd';
 import { Menu } from 'antd';
 import { useNavigate } from 'react-router-dom';
 import useScreenSize from '../Hooks/useScreenSize';
 import { useAppDispatch, useAppSelector } from '../Redux/hooks';
 import { changeRoute } from '../Redux/features/app/app-slice';
 import { Constants } from '../Utilities/Constants';
+import { getInitials } from '../Utilities/Util';
 
 const MobileNav: React.FC = () => {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
   const route = useAppSelector((state) => state.app.route);
+  const account = useAppSelector((state) => state.account);
 
   const screenSize = useScreenSize();
-
-  const type = useAppSelector((state) => state.account.type);
-  const loggedIn = useAppSelector((state) => state.account.loggedIn);
   const [open, setOpen] = React.useState(false);
 
   const onClick: MenuProps['onClick'] = (e) => {
@@ -59,6 +57,20 @@ const MobileNav: React.FC = () => {
         open={open}
         headerStyle={{ borderColor: 'white' }}
       >
+        <div
+          style={{
+            height: '64px',
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center'
+          }}
+        >
+          <Avatar shape='circle' size={64} style={{ background: 'gray' }}>
+            {account.loggedIn
+              ? getInitials(account?.info?.name, account?.info?.surname)
+              : 'Login'}
+          </Avatar>
+        </div>
         <Menu
           onClick={onClick}
           style={{ width: '100%' }}
@@ -77,16 +89,16 @@ const MobileNav: React.FC = () => {
               label: 'Account'
             },
             {
-              key: type === 'dentist' ? 'patients' : 'dentists',
+              key: account.type === 'dentist' ? 'patients' : 'dentists',
               icon: <TeamOutlined />,
-              label: type === 'dentist' ? 'Patients' : 'Dentists',
-              disabled: !loggedIn
+              label: account.type === 'dentist' ? 'Patients' : 'Dentists',
+              disabled: !account.loggedIn
             },
             {
               key: 'booking',
               icon: <CalendarOutlined />,
               label: 'Booking',
-              disabled: !loggedIn
+              disabled: !account.loggedIn
             },
             { type: 'divider', style: { background: 'white' } },
             {
