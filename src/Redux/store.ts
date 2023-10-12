@@ -1,11 +1,15 @@
 import { configureStore } from '@reduxjs/toolkit';
 import accountReducer from './features/account/account-slice';
 import appReducer from './features/app/app-slice';
+import patientsReducer from './features/patient/patient-slice';
+import dentistReducer from './features/dentist/dentist-slice';
 
 export const store = configureStore({
   reducer: {
     account: accountReducer,
-    app: appReducer
+    app: appReducer,
+    patient: patientsReducer,
+    dentist: dentistReducer
   }
 });
 

@@ -11,32 +11,44 @@ import {
   Typography
 } from 'antd';
 import {
-  AccountInfo,
-  changeInfo,
   toggleHasAccount,
   toggleLoggedIn
 } from '../../Redux/features/account/account-slice';
 import { useAppDispatch, useAppSelector } from '../../Redux/hooks';
 import dayjs from 'dayjs';
+import {
+  PatientInfo,
+  changePatientInfo
+} from '../../Redux/features/patient/patient-slice';
+import { useNavigate } from 'react-router-dom';
+import { changeRoute } from '../../Redux/features/app/app-slice';
 
 const { Option } = Select;
 
 const dateFormat = 'YYYY-MM-DD';
 
 const PatientForm: React.FC = () => {
+  const navigate = useNavigate();
   const [form] = Form.useForm();
   const dispatch = useAppDispatch();
   const account = useAppSelector((state) => state.account);
+  const patientInfo = useAppSelector((state) => state.patient.info);
 
-  const onFinish = (values: AccountInfo) => {
+  const onFinish = (values: any) => {
+    // update dob date field of values
+    const result = values?.dob
+      ? ({ ...values, dob: values.dob.format('YYYY-MM-DD') } as PatientInfo)
+      : (values as PatientInfo);
     if (!account.loggedIn) {
       // change db first and signup user
       dispatch(toggleHasAccount());
       dispatch(toggleLoggedIn());
-      dispatch(changeInfo(values));
+      dispatch(changePatientInfo(result));
+      dispatch(changeRoute('booking'));
+      navigate('./booking');
     } else {
-      // change db first
-      dispatch(changeInfo(values));
+      // on save, change db first
+      dispatch(changePatientInfo(result));
     }
   };
 
@@ -57,11 +69,9 @@ const PatientForm: React.FC = () => {
       initialValues={
         account.loggedIn
           ? {
-              ...account?.info,
+              ...patientInfo,
               prefix: 1,
-              dob: account?.info?.dob
-                ? dayjs(account.info.dob, dateFormat)
-                : null
+              dob: patientInfo.dob ? dayjs(patientInfo.dob, dateFormat) : null
             }
           : { prefix: 1, province: 'ab' }
       }
@@ -199,7 +209,12 @@ const PatientForm: React.FC = () => {
         </Col>
         <Col xs={24} md={13}>
           <Form.Item label='Date of Birth' name='dob'>
-            <DatePicker style={{ width: '100%' }} />
+            <DatePicker
+              style={{ width: '100%' }}
+              disabledDate={(current) => {
+                return current && current.valueOf() > Date.now();
+              }}
+            />
           </Form.Item>
         </Col>
       </Row>

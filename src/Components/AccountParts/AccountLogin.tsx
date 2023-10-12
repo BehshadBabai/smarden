@@ -8,14 +8,19 @@ import {
   toggleHasAccount,
   toggleLoggedIn
 } from '../../Redux/features/account/account-slice';
+import { changeRoute } from '../../Redux/features/app/app-slice';
+import { useNavigate } from 'react-router-dom';
 
 const AccountLogin: React.FC = () => {
   const hasAccount = useAppSelector((state) => state.account.hasAccount);
   const dispatch = useAppDispatch();
+  const navigate = useNavigate();
 
   const onFinish = (values: any) => {
     // if (login successfull)
     dispatch(toggleLoggedIn());
+    dispatch(changeRoute('booking'));
+    navigate('./booking');
     // else, show prompt with reason
     console.log('Received values of form: ', values);
   };
