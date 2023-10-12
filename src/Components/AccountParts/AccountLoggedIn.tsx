@@ -4,6 +4,7 @@ import { useAppDispatch, useAppSelector } from '../../Redux/hooks';
 import { capitalizeFirstLetter } from '../../Utilities/Util';
 import { toggleLoggedIn } from '../../Redux/features/account/account-slice';
 import PatientForm from './PatientForm';
+import DentistForm from './DentistFrom';
 
 const AccountLoggedIn: React.FC = () => {
   const type = useAppSelector((state) => state.account.type);
@@ -31,7 +32,7 @@ const AccountLoggedIn: React.FC = () => {
           </Button>
         </Col>
       </Row>
-      <PatientForm />
+      {type === 'patient' ? <PatientForm /> : <DentistForm />}
     </Space>
   );
 };

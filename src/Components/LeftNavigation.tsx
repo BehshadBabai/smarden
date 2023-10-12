@@ -22,6 +22,10 @@ const LeftNavigation: React.FC<LeftNavProps> = ({ collapsed, hidden }) => {
 
   const route = useAppSelector((state) => state.app.route);
   const account = useAppSelector((state) => state.account);
+  const patientInfo = useAppSelector((state) => state.patient.info);
+  const dentistInfo = useAppSelector((state) => state.dentist.info);
+
+  const info = account.type === 'dentist' ? dentistInfo : patientInfo;
 
   return (
     <Sider
@@ -42,9 +46,7 @@ const LeftNavigation: React.FC<LeftNavProps> = ({ collapsed, hidden }) => {
         }}
       >
         <Avatar shape='circle' size={53} style={{ background: 'gray' }}>
-          {account.loggedIn
-            ? getInitials(account?.info?.name, account?.info?.surname)
-            : 'Login'}
+          {account.loggedIn ? getInitials(info.name, info.surname) : 'Login'}
         </Avatar>
       </div>
       <Menu
