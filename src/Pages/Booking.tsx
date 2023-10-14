@@ -8,14 +8,7 @@ const Booking: React.FC = () => {
   const account = useAppSelector((state) => state.account);
   const type = account.type;
 
-  return (
-    <div style={{ display: 'flex', justifyContent: 'center' }}>
-      <Space direction='vertical' size={'large'} style={{ width: '100%' }}>
-        <Typography.Title>Your Bookings</Typography.Title>
-        {type === 'patient' ? <DentistCard /> : <PatientCard />}
-      </Space>
-    </div>
-  );
+  return type === 'patient' ? <DentistCard /> : <PatientCard />;
 };
 
 export default Booking;

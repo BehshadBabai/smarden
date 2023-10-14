@@ -30,26 +30,13 @@ const initialState: PatientState = {
     phone: '2366888933',
     address1: '4720',
     address2: '4205',
-    country: 'canada',
+    country: 'Canada',
     dob: '2001-04-09',
     gender: 'male',
-    province: 'bc',
+    province: 'British Columbia',
     postalCode: 'V5C0M8'
   },
-  dentists: [
-    {
-      id: '2',
-      name: 'Mohammad',
-      surname: 'Babai',
-      email: 'mbabai110@yahoo.com',
-      phone: '7781010101',
-      address1: '8181',
-      address2: '1007',
-      country: 'canada',
-      province: 'bc',
-      postalCode: 'v5x0j9'
-    }
-  ]
+  dentists: []
 };
 
 const patientSlice = createSlice({
@@ -58,9 +45,13 @@ const patientSlice = createSlice({
   reducers: {
     changePatientInfo(state, action: PayloadAction<PatientInfo>) {
       state.info = action.payload;
+    },
+    changePatientDentists(state, action: PayloadAction<DentistInfo[]>) {
+      state.dentists = action.payload;
     }
   }
 });
 
-export const { changePatientInfo } = patientSlice.actions;
+export const { changePatientInfo, changePatientDentists } =
+  patientSlice.actions;
 export default patientSlice.reducer;

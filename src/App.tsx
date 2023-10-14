@@ -9,13 +9,41 @@ import CustomHeader from './Components/CustomHeader';
 import Contacts from './Pages/Contacts';
 import Booking from './Pages/Booking';
 import Feedback from './Pages/Feedback';
-import { Constants } from './Utilities/Constants';
+import { Constants, LocalStorageKeys } from './Utilities/Constants';
 
 const { Content } = Layout;
 
 const App = () => {
   const screenSize = useScreenSize();
   const [collapsed, setCollapsed] = React.useState(false);
+
+  const bookingTourDentist = {
+    shown: false
+  };
+  const bookingTourPatient = {
+    shown: false
+  };
+  if (localStorage) {
+    const dentistObj = JSON.parse(
+      localStorage.getItem(LocalStorageKeys.tours.dentist)
+    );
+    if (!dentistObj) {
+      localStorage.setItem(
+        LocalStorageKeys.tours.dentist,
+        JSON.stringify(bookingTourDentist)
+      );
+    }
+    const patientObj = JSON.parse(
+      localStorage.getItem(LocalStorageKeys.tours.dentist)
+    );
+    if (!patientObj) {
+      localStorage.setItem(
+        LocalStorageKeys.tours.patient,
+        JSON.stringify(bookingTourPatient)
+      );
+    }
+  }
+
   const {
     token: { colorBgContainer }
   } = theme.useToken();
@@ -45,7 +73,7 @@ const App = () => {
               <Route path='booking' element={<Booking />} />
               <Route path='feedback' element={<Feedback />} />
               <Route path='404' element={<NoPage />} />
-              <Route path='*' element={<Navigate to='/404' replace />} />
+              <Route path='*' element={<NoPage />} />
             </Routes>
           </Content>
         </Layout>

@@ -33,6 +33,41 @@ const initialState: AccountState = {
   bookings: [
     {
       patient: {
+        name: 'Behshad',
+        surname: 'Babai',
+        email: 'b@b.com',
+        id: '8',
+        phone: '2366888933',
+        address1: '4720',
+        address2: '4205',
+        country: 'Canada',
+        dob: '2001-04-09',
+        gender: 'male',
+        province: 'British Columbia',
+        postalCode: 'V5C0M8'
+      },
+      dentist: {
+        name: 'Reza',
+        surname: 'BT',
+        email: 'mbabai110@yahoo.com',
+        id: '5',
+        address1: '8181',
+        address2: 'chester',
+        country: 'Canada',
+        phone: '778',
+        province: 'British Columbia',
+        postalCode: 'V5X0J9'
+      },
+      severity: 'high',
+      title: 'My Face Hurts',
+      description: '',
+      reply: '',
+      time: '2023-10-10',
+      id: '2',
+      status: 'pending'
+    },
+    {
+      patient: {
         name: 'Behbod',
         surname: 'Babai',
         email: 'b@b.com',
@@ -40,10 +75,10 @@ const initialState: AccountState = {
         phone: '2366888933',
         address1: '4720',
         address2: '4205',
-        country: 'canada',
+        country: 'Canada',
         dob: '2001-04-09',
         gender: 'male',
-        province: 'bc',
+        province: 'British Columbia',
         postalCode: 'V5C0M8'
       },
       dentist: {
@@ -53,9 +88,9 @@ const initialState: AccountState = {
         id: '3',
         address1: '8181',
         address2: 'chester',
-        country: 'canada',
+        country: 'Canada',
         phone: '778',
-        province: 'bc',
+        province: 'British Columbia',
         postalCode: 'V5X0J9'
       },
       severity: 'high',
@@ -76,10 +111,10 @@ const initialState: AccountState = {
         phone: '2366888933',
         address1: '4720',
         address2: '4205',
-        country: 'canada',
+        country: 'Canada',
         dob: '2001-04-09',
         gender: 'male',
-        province: 'bc',
+        province: 'British Columbia',
         postalCode: 'V5C0M8'
       },
       dentist: {
@@ -89,9 +124,80 @@ const initialState: AccountState = {
         id: '5',
         address1: '8181',
         address2: 'chester',
-        country: 'canada',
+        country: 'Canada',
         phone: '778',
-        province: 'bc',
+        province: 'British Columbia',
+        postalCode: 'V5X0J9'
+      },
+      severity: 'low',
+      title: 'My Face Hurts',
+      description: '',
+      reply: '',
+      time: '2023-10-10',
+      id: '3',
+      status: 'pending'
+    },
+    {
+      patient: {
+        name: 'Behbod',
+        surname: 'Babai',
+        email: 'b@b.com',
+        id: '8',
+        phone: '2366888933',
+        address1: '4720',
+        address2: '4205',
+        country: 'Canada',
+        dob: '2001-04-09',
+        gender: 'male',
+        province: 'British Columbia',
+        postalCode: 'V5C0M8'
+      },
+      dentist: {
+        name: 'Mohammad',
+        surname: 'Babai',
+        email: 'mbabai110@yahoo.com',
+        id: '3',
+        address1: '8181',
+        address2: 'chester',
+        country: 'Canada',
+        phone: '778',
+        province: 'British Columbia',
+        postalCode: 'V5X0J9'
+      },
+      severity: 'high',
+      title: 'My Teeth Hurt and this is the',
+      description:
+        'They Just Hurt IDK why honestly, it happened since I ate honey and apple pie together!',
+      reply: 'This is my reply',
+      time: '2023-10-10',
+      id: '4',
+      status: 'pending'
+    },
+    {
+      patient: {
+        name: 'Behshad',
+        surname: 'Babai',
+        email: 'b@b.com',
+        id: '8',
+        phone: '2366888933',
+        address1: '4720',
+        address2: '4205',
+        country: 'Canada',
+        dob: '2001-04-09',
+        gender: 'male',
+        province: 'British Columbia',
+        postalCode: 'V5C0M8'
+      },
+      dentist: {
+        name: 'Reza',
+        surname: 'BT',
+        email: 'mbabai110@yahoo.com',
+        id: '5',
+        address1: '8181',
+        address2: 'chester',
+        country: 'Canada',
+        phone: '778',
+        province: 'British Columbia',
         postalCode: 'V5X0J9'
       },
       severity: 'medium',
@@ -99,7 +205,7 @@ const initialState: AccountState = {
       description: '',
       reply: '',
       time: '2023-10-10',
-      id: '2',
+      id: '5',
       status: 'pending'
     }
   ]

@@ -5,12 +5,16 @@ import {
   DentistInfo,
   changeDentistInfo
 } from '../../Redux/features/dentist/dentist-slice';
+import { provinces, states } from '../../Utilities/Constants';
 
 const DentistForm: React.FC = () => {
   const [form] = Form.useForm();
   const dispatch = useAppDispatch();
   const account = useAppSelector((state) => state.account);
   const dentistInfo = useAppSelector((state) => state.dentist.info);
+  const [country, setCountry] = React.useState('Canada');
+  const [provState, setProvState] = React.useState(dentistInfo?.province);
+  const options = country === 'Canada' ? provinces : states;
 
   const onFinish = (values: DentistInfo) => {
     // on save, change db first
@@ -63,16 +67,13 @@ const DentistForm: React.FC = () => {
           </Form.Item>
         </Col>
       </Row>
-      <Row>
-        <Col xs={24}>
+      <Row gutter={10}>
+        <Col xs={24} lg={11}>
           <Form.Item name='address1' label='Address Line 1'>
             <Input />
           </Form.Item>
         </Col>
-      </Row>
-
-      <Row>
-        <Col xs={24}>
+        <Col xs={24} lg={13}>
           <Form.Item name='address2' label='Address Line 2'>
             <Input />
           </Form.Item>
@@ -80,33 +81,41 @@ const DentistForm: React.FC = () => {
       </Row>
 
       <Row gutter={10}>
-        <Col xs={24} md={9}>
+        <Col xs={24} lg={7}>
           <Form.Item label='Country'>
-            <Select defaultValue={'canada'}>
-              <Select.Option value='canada'>Canada</Select.Option>
+            <Select
+              value={country}
+              onChange={(newValue) => {
+                if (newValue === 'Canada') {
+                  setProvState('Alberta');
+                } else {
+                  setProvState('Alabama');
+                }
+                setCountry(newValue);
+              }}
+            >
+              <Select.Option value='Canada'>Canada</Select.Option>
+              <Select.Option value='United States'>United States</Select.Option>
             </Select>
           </Form.Item>
         </Col>
-        <Col xs={24} md={7}>
-          <Form.Item label='Province' name='province'>
-            <Select>
-              <Select.Option value='ab'>AB</Select.Option>
-              <Select.Option value='bc'>BC</Select.Option>
-              <Select.Option value='mb'>MB</Select.Option>
-              <Select.Option value='nb'>NB</Select.Option>
-              <Select.Option value='nl'>NL</Select.Option>
-              <Select.Option value='nt'>NT</Select.Option>
-              <Select.Option value='ns'>NS</Select.Option>
-              <Select.Option value='ny'>NY</Select.Option>
-              <Select.Option value='on'>ON</Select.Option>
-              <Select.Option value='pe'>PE</Select.Option>
-              <Select.Option value='qc'>QC</Select.Option>
-              <Select.Option value='sk'>SK</Select.Option>
-              <Select.Option value='yt'>YT</Select.Option>
+        <Col xs={24} lg={9}>
+          <Form.Item label='Province'>
+            <Select
+              value={provState}
+              onChange={(newValue) => {
+                setProvState(newValue);
+              }}
+            >
+              {options.map((option) => (
+                <Select.Option value={option} key={option}>
+                  {option}
+                </Select.Option>
+              ))}
             </Select>
           </Form.Item>
         </Col>
-        <Col xs={24} md={8}>
+        <Col xs={24} lg={8}>
           <Form.Item name='postalCode' label='Postal Code'>
             <Input />
           </Form.Item>
@@ -129,6 +138,8 @@ const DentistForm: React.FC = () => {
               type='default'
               onClick={() => {
                 form.resetFields();
+                setProvState(dentistInfo?.province);
+                setCountry(dentistInfo?.country);
               }}
             >
               Reset

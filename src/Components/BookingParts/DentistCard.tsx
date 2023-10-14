@@ -22,6 +22,8 @@ import {
   Space,
   Tag,
   Tooltip,
+  Tour,
+  TourProps,
   Typography,
   notification
 } from 'antd';
@@ -39,10 +41,19 @@ import Meta from 'antd/es/card/Meta';
 import dayjs from 'dayjs';
 import { v4 as uuidv4 } from 'uuid';
 import { openNotificationWithIcon } from '../../Utilities/Util';
+import { LocalStorageKeys } from '../../Utilities/Constants';
+import { FcCalendar } from 'react-icons/fc';
 
 const DentistCard: React.FC = () => {
   const { Option } = Select;
 
+  const ref1 = React.useRef(null);
+  const ref2 = React.useRef(null);
+  const ref3 = React.useRef(null);
+  const ref4 = React.useRef(null);
+  const ref5 = React.useRef(null);
+
+  const [tourOpen, setTourOpen] = React.useState(false);
   const [descModalOpen, setDescModalOpen] = React.useState(false);
   const [replyModalOpen, setReplyModalOpen] = React.useState(false);
   const [editModalOpen, setEditModalOpen] = React.useState(false);
@@ -63,6 +74,51 @@ const DentistCard: React.FC = () => {
 
   const [api, contextHolder] = notification.useNotification();
 
+  React.useEffect(() => {
+    if (bookings?.length > 0 && localStorage) {
+      const shown = JSON.parse(
+        localStorage.getItem(LocalStorageKeys.tours.dentist)
+      )?.shown;
+      if (!shown) {
+        // do something
+        localStorage.setItem(
+          LocalStorageKeys.tours.dentist,
+          JSON.stringify({ shown: true })
+        );
+        setTourOpen(true);
+      }
+    }
+  }, [bookings]);
+
+  const tourSteps: TourProps['steps'] = [
+    {
+      title: 'Your Booking',
+      description: 'Your bookings will appear in card formats.',
+      target: () => ref1.current!
+    },
+    {
+      title: 'View Reply',
+      description: 'View the reply from your dentist for this booking.',
+      target: () => ref2.current!
+    },
+    {
+      title: 'Edit Description',
+      description: 'Edit the description of your booking.',
+      target: () => ref3.current!
+    },
+    {
+      title: 'Delete Booking',
+      description: 'Delete your booking.',
+      target: () => ref4.current!
+    },
+    {
+      title: 'Booking Status',
+      description:
+        'View the status of your booking. This will be chnaged by your dentist.',
+      target: () => ref5.current!
+    }
+  ];
+
   return (
     <>
       <Row gutter={[16, 32]}>
@@ -75,20 +131,18 @@ const DentistCard: React.FC = () => {
         >
           <Card
             title={
-              <Space
-                direction='horizontal'
-                size={'small'}
-                style={{
-                  display: 'flex',
-                  alignItems: 'baseline',
-                  justifyContent: 'center'
-                }}
-              >
-                <Typography.Title level={5}>Add a Booking</Typography.Title>
-                <PlusCircleOutlined />
-              </Space>
+              <Row justify={'center'} align={'middle'} gutter={10}>
+                <Col>
+                  <Typography.Text>Add a Booking</Typography.Text>
+                </Col>
+                <Col>
+                  <PlusCircleOutlined />
+                </Col>
+              </Row>
             }
+            headStyle={{ borderBottom: '2px solid lightgray' }}
             style={{ width: 300, textAlign: 'center', cursor: 'pointer' }}
+            className='customCard'
             onClick={() => {
               if (dentists.length > 0) {
                 setNewModalOpen(true);
@@ -101,11 +155,10 @@ const DentistCard: React.FC = () => {
               }
             }}
           >
-            <CalendarFilled style={{ fontSize: '8em' }} />
+            <FcCalendar size={120} />
           </Card>
         </Col>
-        {/* {booking card template, have to render from array} */}
-        {bookings.map((myBooking) => {
+        {bookings.map((myBooking, index) => {
           return (
             <Col
               xs={{ span: 24 }}
@@ -115,6 +168,9 @@ const DentistCard: React.FC = () => {
               key={myBooking.id}
             >
               <Card
+                className='customCard'
+                ref={index === 0 ? ref1 : null}
+                headStyle={{ borderBottom: '2px solid lightgray' }}
                 title={
                   <Row justify={'space-between'}>
                     <Typography.Text>
@@ -138,28 +194,34 @@ const DentistCard: React.FC = () => {
                 }
                 style={{ width: 300 }}
                 actions={[
-                  <CommentOutlined
-                    key='reply'
-                    onClick={() => {
-                      if (myBooking.reply) {
+                  <Tooltip placement='bottom' title='View Dentist Reply'>
+                    <CommentOutlined
+                      ref={index === 0 ? ref2 : null}
+                      key='reply'
+                      onClick={() => {
+                        if (myBooking.reply) {
+                          setBooking(myBooking);
+                          setReplyModalOpen(true);
+                        } else {
+                          Modal.info({
+                            title: 'No Reply Yet!',
+                            content: `There is no text reply from Dr. ${myBooking.dentist.name} ${myBooking.dentist.surname} for this booking right now, check back later to see their reply.`
+                          });
+                        }
+                      }}
+                    />
+                  </Tooltip>,
+                  <Tooltip placement='bottom' title='Edit Description'>
+                    <EditOutlined
+                      ref={index === 0 ? ref3 : null}
+                      key='edit'
+                      onClick={() => {
                         setBooking(myBooking);
-                        setReplyModalOpen(true);
-                      } else {
-                        Modal.info({
-                          title: 'No Reply Yet!',
-                          content: `There is no text reply from Dr. ${myBooking.dentist.name} ${myBooking.dentist.surname} for this booking right now, check back later to see their reply.`
-                        });
-                      }
-                    }}
-                  />,
-                  <EditOutlined
-                    key='edit'
-                    onClick={() => {
-                      setBooking(myBooking);
-                      setDescText(myBooking.description);
-                      setEditModalOpen(true);
-                    }}
-                  />,
+                        setDescText(myBooking.description);
+                        setEditModalOpen(true);
+                      }}
+                    />
+                  </Tooltip>,
                   <Popconfirm
                     title='Delete Booking'
                     icon={<WarningOutlined />}
@@ -174,7 +236,12 @@ const DentistCard: React.FC = () => {
                     okText={'Yes'}
                     cancelText={'No'}
                   >
-                    <DeleteOutlined key={'delete'} />
+                    <Tooltip placement='bottom' title='Remove Booking'>
+                      <DeleteOutlined
+                        key={'delete'}
+                        ref={index === 0 ? ref4 : null}
+                      />
+                    </Tooltip>
                   </Popconfirm>
                 ]}
               >
@@ -202,14 +269,19 @@ const DentistCard: React.FC = () => {
                         >
                           <Tooltip placement='top' title={myBooking.status}>
                             {myBooking.status === 'approved' ? (
-                              <CheckCircleOutlined style={{ color: 'green' }} />
+                              <CheckCircleOutlined
+                                style={{ color: 'green' }}
+                                ref={index === 0 ? ref5 : null}
+                              />
                             ) : myBooking.status === 'pending' ? (
                               <MinusCircleOutlined
                                 style={{ color: '#faad14' }}
+                                ref={index === 0 ? ref5 : null}
                               />
                             ) : (
                               <CloseCircleOutlined
                                 style={{ color: '#ff4d4f' }}
+                                ref={index === 0 ? ref5 : null}
                               />
                             )}
                           </Tooltip>
@@ -351,7 +423,7 @@ const DentistCard: React.FC = () => {
           layout='vertical'
           name='form_in_modal'
           initialValues={{
-            dentist: dentists[0].id,
+            dentist: dentists[0]?.id,
             date: dayjs(),
             severity: 'low'
           }}
@@ -431,6 +503,18 @@ const DentistCard: React.FC = () => {
           </Form.Item>
         </Form>
       </Modal>
+
+      {/* Tour */}
+      <Tour
+        open={tourOpen}
+        onClose={() => setTourOpen(false)}
+        steps={tourSteps}
+        indicatorsRender={(current, total) => (
+          <span>
+            {current + 1} / {total}
+          </span>
+        )}
+      />
     </>
   );
 };
