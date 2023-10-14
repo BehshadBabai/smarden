@@ -15,6 +15,8 @@ import {
   Space,
   Tag,
   Tooltip,
+  Tour,
+  TourProps,
   Typography,
   notification
 } from 'antd';
@@ -28,6 +30,7 @@ import {
   changeBookingStatus
 } from '../../Redux/features/account/account-slice';
 import { openNotificationWithIcon } from '../../Utilities/Util';
+import { LocalStorageKeys } from '../../Utilities/Constants';
 
 const DentistCard: React.FC = () => {
   const dispatch = useDispatch();
@@ -48,6 +51,59 @@ const DentistCard: React.FC = () => {
 
   const [api, contextHolder] = notification.useNotification();
 
+  const ref1 = React.useRef(null);
+  const ref2 = React.useRef(null);
+  const ref3 = React.useRef(null);
+  const ref4 = React.useRef(null);
+  const ref5 = React.useRef(null);
+  const [tourOpen, setTourOpen] = React.useState(false);
+
+  React.useEffect(() => {
+    if (bookings?.length > 0 && localStorage) {
+      const shown = JSON.parse(
+        localStorage.getItem(LocalStorageKeys.tours.patient)
+      )?.shown;
+      if (!shown) {
+        // do something
+        localStorage.setItem(
+          LocalStorageKeys.tours.patient,
+          JSON.stringify({ shown: true })
+        );
+        setTourOpen(true);
+      }
+    }
+  }, [bookings]);
+
+  const tourSteps: TourProps['steps'] = [
+    {
+      title: 'Your Booking',
+      description: 'Your bookings will appear in card formats.',
+      target: () => ref1.current!
+    },
+    {
+      title: 'Write/Edit Reply',
+      description:
+        'Write or edit a reply to send to your patient for this booking.',
+      target: () => ref2.current!
+    },
+    {
+      title: 'Reject Booking',
+      description: 'Reject the proposed booking by your patient.',
+      target: () => ref3.current!
+    },
+    {
+      title: 'Approve Booking',
+      description: 'Approve the proposed booking by your patient.',
+      target: () => ref4.current!
+    },
+    {
+      title: 'Booking Status',
+      description:
+        'View the status of your booking. You can change this with the approve/reject buttons',
+      target: () => ref5.current!
+    }
+  ];
+
   return (
     <>
       <Row gutter={[16, 32]}>
@@ -60,7 +116,7 @@ const DentistCard: React.FC = () => {
             />
           </Col>
         ) : (
-          bookings.map((myBooking) => {
+          bookings.map((myBooking, index) => {
             return (
               <Col
                 xs={{ span: 24 }}
@@ -70,6 +126,9 @@ const DentistCard: React.FC = () => {
                 key={myBooking.id}
               >
                 <Card
+                  className='customCard'
+                  ref={index === 0 ? ref1 : null}
+                  headStyle={{ borderBottom: '2px solid lightgray' }}
                   title={
                     <Row justify={'space-between'}>
                       <Typography.Text>
@@ -92,14 +151,17 @@ const DentistCard: React.FC = () => {
                   }
                   style={{ width: 300 }}
                   actions={[
-                    <CommentOutlined
-                      key='reply'
-                      onClick={() => {
-                        setBooking(myBooking);
-                        setReplyText(myBooking.reply);
-                        setReplyModalOpen(true);
-                      }}
-                    />,
+                    <Tooltip placement='bottom' title='Write/Edit Reply'>
+                      <CommentOutlined
+                        ref={index === 0 ? ref2 : null}
+                        key='reply'
+                        onClick={() => {
+                          setBooking(myBooking);
+                          setReplyText(myBooking.reply);
+                          setReplyModalOpen(true);
+                        }}
+                      />
+                    </Tooltip>,
                     <Popconfirm
                       title='Reject Booking'
                       icon={<WarningOutlined />}
@@ -119,7 +181,12 @@ const DentistCard: React.FC = () => {
                       okText={'Yes'}
                       cancelText={'No'}
                     >
-                      <CloseCircleOutlined key='reject' />
+                      <Tooltip placement='bottom' title='Reject Booking'>
+                        <CloseCircleOutlined
+                          key='reject'
+                          ref={index === 0 ? ref3 : null}
+                        />
+                      </Tooltip>
                     </Popconfirm>,
                     <Popconfirm
                       title='Approve Booking'
@@ -140,7 +207,12 @@ const DentistCard: React.FC = () => {
                       okText={'Yes'}
                       cancelText={'No'}
                     >
-                      <CheckCircleOutlined key={'approve'} />
+                      <Tooltip placement='bottom' title='Approve Booking'>
+                        <CheckCircleOutlined
+                          key={'approve'}
+                          ref={index === 0 ? ref4 : null}
+                        />
+                      </Tooltip>
                     </Popconfirm>
                   ]}
                 >
@@ -170,14 +242,17 @@ const DentistCard: React.FC = () => {
                               {myBooking.status === 'approved' ? (
                                 <CheckCircleOutlined
                                   style={{ color: 'green' }}
+                                  ref={index === 0 ? ref5 : null}
                                 />
                               ) : myBooking.status === 'pending' ? (
                                 <MinusCircleOutlined
                                   style={{ color: '#faad14' }}
+                                  ref={index === 0 ? ref5 : null}
                                 />
                               ) : (
                                 <CloseCircleOutlined
                                   style={{ color: '#ff4d4f' }}
+                                  ref={index === 0 ? ref5 : null}
                                 />
                               )}
                             </Tooltip>
@@ -264,6 +339,17 @@ const DentistCard: React.FC = () => {
           </Modal>
         </>
       )}
+      {/* Tour */}
+      <Tour
+        open={tourOpen}
+        onClose={() => setTourOpen(false)}
+        steps={tourSteps}
+        indicatorsRender={(current, total) => (
+          <span>
+            {current + 1} / {total}
+          </span>
+        )}
+      />
     </>
   );
 };

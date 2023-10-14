@@ -47,7 +47,7 @@ const FeedBack: React.FC = () => (
                 fontSize: '1.1em'
               }}
             >
-              Send Us Your Feedback:
+              Share Your Feedback With Us:
             </Typography.Text>
           </Col>
         </Row>
@@ -83,7 +83,7 @@ const FeedBack: React.FC = () => (
               <Option value='other'>Other</Option>
             </Select>
           </Form.Item>
-          <Form.Item name='rate' label='Rate'>
+          <Form.Item name='rate' label='Rating'>
             <Rate allowClear={false} />
           </Form.Item>
           <Form.Item name={['user', 'message']} label='Message'>
