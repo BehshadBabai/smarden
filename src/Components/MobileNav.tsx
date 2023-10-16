@@ -13,7 +13,7 @@ import { useNavigate } from 'react-router-dom';
 import useScreenSize from '../Hooks/useScreenSize';
 import { useAppDispatch, useAppSelector } from '../Redux/hooks';
 import { changeRoute } from '../Redux/features/app/app-slice';
-import { Constants } from '../Utilities/Constants';
+import { Constants, colors } from '../Utilities/Constants';
 import { getInitials } from '../Utilities/Util';
 
 const MobileNav: React.FC = () => {
@@ -57,7 +57,7 @@ const MobileNav: React.FC = () => {
         onClose={() => {
           setOpen(false);
         }}
-        style={{ background: '#001529' }}
+        style={{ background: colors.bgBlack }}
         open={open}
         headerStyle={{ borderColor: 'white' }}
       >
@@ -69,7 +69,11 @@ const MobileNav: React.FC = () => {
             alignItems: 'center'
           }}
         >
-          <Avatar shape='circle' size={64} style={{ background: 'gray' }}>
+          <Avatar
+            shape='circle'
+            size={64}
+            style={{ background: colors.iOrange }}
+          >
             {account.loggedIn ? getInitials(info.name, info.surname) : 'Login'}
           </Avatar>
         </div>

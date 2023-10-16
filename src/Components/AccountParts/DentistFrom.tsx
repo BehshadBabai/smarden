@@ -18,7 +18,14 @@ const DentistForm: React.FC = () => {
 
   const onFinish = (values: DentistInfo) => {
     // on save, change db first
-    dispatch(changeDentistInfo(values));
+    dispatch(
+      changeDentistInfo({
+        ...values,
+        country: country,
+        province: provState,
+        id: dentistInfo.id
+      })
+    );
   };
 
   return (
@@ -136,6 +143,7 @@ const DentistForm: React.FC = () => {
           <Col>
             <Button
               type='default'
+              className='defaultButton'
               onClick={() => {
                 form.resetFields();
                 setProvState(dentistInfo?.province);

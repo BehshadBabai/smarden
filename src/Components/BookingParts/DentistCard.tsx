@@ -133,7 +133,9 @@ const DentistCard: React.FC = () => {
             title={
               <Row justify={'center'} align={'middle'} gutter={10}>
                 <Col>
-                  <Typography.Text>Add a Booking</Typography.Text>
+                  <Typography.Text className='darkText'>
+                    Add a Booking
+                  </Typography.Text>
                 </Col>
                 <Col>
                   <PlusCircleOutlined />
@@ -173,7 +175,7 @@ const DentistCard: React.FC = () => {
                 headStyle={{ borderBottom: '2px solid lightgray' }}
                 title={
                   <Row justify={'space-between'}>
-                    <Typography.Text>
+                    <Typography.Text className='darkText'>
                       {'Dr. ' +
                         myBooking.dentist.name +
                         ' ' +
@@ -235,6 +237,7 @@ const DentistCard: React.FC = () => {
                     }
                     okText={'Yes'}
                     cancelText={'No'}
+                    cancelButtonProps={{ className: 'defaultButton' }}
                   >
                     <Tooltip placement='bottom' title='Remove Booking'>
                       <DeleteOutlined
@@ -257,7 +260,7 @@ const DentistCard: React.FC = () => {
                         style={{ alignItems: 'baseline' }}
                       >
                         <Col>
-                          <Typography.Title level={5}>
+                          <Typography.Title className='darkText' level={5}>
                             {myBooking.title}
                           </Typography.Title>
                         </Col>
@@ -348,6 +351,7 @@ const DentistCard: React.FC = () => {
           open={editModalOpen}
           confirmLoading={confirmEditLoading}
           okText='Edit'
+          cancelButtonProps={{ className: 'defaultButton' }}
           onOk={() => {
             setEditConfirmLoading(true);
             setTimeout(() => {
@@ -415,6 +419,7 @@ const DentistCard: React.FC = () => {
         onCancel={() => {
           setNewModalOpen(false);
         }}
+        cancelButtonProps={{ className: 'defaultButton' }}
         confirmLoading={confirmNewLoading}
         okText='Add'
       >
@@ -422,6 +427,7 @@ const DentistCard: React.FC = () => {
           form={form}
           layout='vertical'
           name='form_in_modal'
+          className='addBookingForm'
           initialValues={{
             dentist: dentists[0]?.id,
             date: dayjs(),

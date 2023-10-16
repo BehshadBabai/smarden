@@ -41,8 +41,12 @@ const PatientForm: React.FC = () => {
   const onFinish = (values: any) => {
     // update dob date field of values
     const result = values?.dob
-      ? ({ ...values, dob: values.dob.format('YYYY-MM-DD') } as PatientInfo)
-      : (values as PatientInfo);
+      ? ({
+          ...values,
+          dob: values.dob.format('YYYY-MM-DD'),
+          province: provState
+        } as PatientInfo)
+      : ({ ...values, province: provState } as PatientInfo);
     if (!account.loggedIn) {
       // change db first and signup user
       dispatch(toggleHasAccount());
@@ -52,7 +56,7 @@ const PatientForm: React.FC = () => {
       navigate('./booking');
     } else {
       // on save, change db first
-      dispatch(changePatientInfo(result));
+      dispatch(changePatientInfo({ ...result, id: patientInfo.id }));
     }
   };
 
@@ -322,6 +326,7 @@ const PatientForm: React.FC = () => {
             <Col>
               <Button
                 type='default'
+                className='defaultButton'
                 onClick={() => {
                   form.resetFields();
                   setProvState(patientInfo?.province);

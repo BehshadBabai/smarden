@@ -11,6 +11,7 @@ import { useNavigate } from 'react-router-dom';
 import { useAppDispatch, useAppSelector } from '../Redux/hooks';
 import { changeRoute } from '../Redux/features/app/app-slice';
 import { getInitials } from '../Utilities/Util';
+import { colors } from '../Utilities/Constants';
 
 type LeftNavProps = { collapsed: boolean; hidden: boolean };
 
@@ -35,6 +36,7 @@ const LeftNavigation: React.FC<LeftNavProps> = ({ collapsed, hidden }) => {
       hidden={hidden}
       width={210}
       collapsedWidth={100}
+      className='border-right'
     >
       <div className='demo-logo-vertical' />
       <div
@@ -45,7 +47,7 @@ const LeftNavigation: React.FC<LeftNavProps> = ({ collapsed, hidden }) => {
           alignItems: 'center'
         }}
       >
-        <Avatar shape='circle' size={53} style={{ background: 'gray' }}>
+        <Avatar shape='circle' size={53} style={{ background: colors.iOrange }}>
           {account.loggedIn ? getInitials(info.name, info.surname) : 'Login'}
         </Avatar>
       </div>
