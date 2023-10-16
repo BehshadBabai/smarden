@@ -7,6 +7,7 @@ import { FcPhoneAndroid } from 'react-icons/fc';
 import { BsGenderMale } from 'react-icons/bs';
 import { FiMail } from 'react-icons/fi';
 import { AiOutlineIdcard } from 'react-icons/ai';
+import { colors } from '../../Utilities/Constants';
 
 export const Patients: React.FC = () => {
   const allPatients = useAppSelector((state) => state.dentist.patients);
@@ -36,6 +37,7 @@ export const Patients: React.FC = () => {
       />
       {allPatients?.length > 0 ? (
         <List
+          className='patients'
           pagination={{
             position: 'bottom',
             align: 'center',
@@ -45,10 +47,10 @@ export const Patients: React.FC = () => {
           }}
           dataSource={patients}
           renderItem={(item, _index) => (
-            <List.Item>
+            <List.Item style={{ paddingTop: '10px', marginBottom: '20px' }}>
               <List.Item.Meta
                 avatar={
-                  <Avatar shape='circle' style={{ background: 'gray' }}>
+                  <Avatar shape='circle' style={{ background: colors.iBlue }}>
                     {getInitials(item.name, item.surname)}
                   </Avatar>
                 }

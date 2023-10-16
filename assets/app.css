@@ -4,9 +4,76 @@
 
 .customCard {
   border-radius: 5px;
-  box-shadow: 1px 2px 3px 4px rgba(12, 12, 12, 0.2);
+  box-shadow: 1px 2px 4px 8px rgba(169, 169, 169, 0.381);
 }
 
 .customCard:hover {
   transform: scale(1.05);
+}
+
+.border-right {
+  border-right: 1.5px solid white;
+}
+
+.border-bottom {
+  border-bottom: 1.5px solid white;
+}
+
+.iCollapseButton {
+  color: white;
+  font-size: 16px;
+}
+
+.iCollapseButton:hover {
+  color: white !important;
+}
+
+.ant-row .ant-col label {
+  color: white;
+}
+
+.ant-empty-image g g {
+  stroke: black;
+}
+
+.ant-empty-description {
+  color: black !important;
+}
+
+.ant-pagination li {
+  background-color: white !important;
+}
+
+.ant-pagination li.ant-pagination-item-active {
+  background-color: #3e61bb !important;
+}
+
+.ant-pagination li.ant-pagination-item-active a {
+  color: white !important;
+}
+
+.defaultButton:hover {
+  background-color: #f07e74 !important;
+  border-color: #ffb1aa !important;
+  color: white !important;
+}
+
+.darkText {
+  color: black !important;
+}
+
+.ant-list-item {
+  background-color: white !important;
+}
+
+.patients .ant-list-item {
+  border-radius: 20px !important;
+}
+
+.ant-input-group-addon {
+  background: white !important;
+}
+
+.addBookingForm .ant-form-item .ant-row .ant-col label {
+  color: black;
 }

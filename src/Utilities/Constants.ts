@@ -1,3 +1,5 @@
+import { ThemeConfig } from 'antd';
+
 export const Constants = {
   breakpoint: 600
 };
@@ -76,3 +78,57 @@ export const provinces = [
   'Saskatchewan',
   'Yukon'
 ];
+
+export const colors = {
+  bgBlack: '#2C2C2C',
+  iBlue: '#3E61BB',
+  iOrange: '#FB4D3D'
+};
+
+export const themeConstant: ThemeConfig = {
+  components: {
+    Input: {
+      colorBgContainer: 'white',
+      addonBg: 'red'
+    },
+    Layout: {
+      siderBg: colors.bgBlack,
+      colorBorder: 'white',
+      bodyBg: colors.bgBlack
+    },
+    Menu: {
+      darkItemBg: colors.bgBlack
+    },
+    Rate: {
+      starBg: 'gray'
+    },
+    Select: {
+      colorBgContainerDisabled: 'lightGray'
+    },
+    Empty: {
+      fontSizeIcon: 400
+    },
+    Button: {
+      defaultBg: colors.iOrange,
+      defaultColor: 'white',
+      defaultBorderColor: colors.iOrange
+    },
+    Radio: {
+      colorText: 'white'
+    },
+    Typography: {
+      colorText: 'white',
+      colorTextHeading: 'white'
+    },
+    List: {
+      headerBg: 'lightgray',
+      itemPadding: '15px 15px'
+    },
+    Table: {
+      headerBg: 'lightgray'
+    }
+  },
+  token: {
+    colorPrimary: colors.iBlue
+  }
+};

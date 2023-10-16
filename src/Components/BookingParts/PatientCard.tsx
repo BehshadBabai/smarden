@@ -110,7 +110,11 @@ const DentistCard: React.FC = () => {
         {bookings.length < 1 ? (
           <Col span={24} style={{ display: 'flex', justifyContent: 'center' }}>
             <Empty
-              description='You have no current bookings, please check back later!'
+              description={
+                <p style={{ color: 'white' }}>
+                  You have no current bookings, please check back later!
+                </p>
+              }
               style={{ fontSize: '1.3em' }}
               imageStyle={{ height: '200px' }}
             />
@@ -131,7 +135,7 @@ const DentistCard: React.FC = () => {
                   headStyle={{ borderBottom: '2px solid lightgray' }}
                   title={
                     <Row justify={'space-between'}>
-                      <Typography.Text>
+                      <Typography.Text className='darkText'>
                         {myBooking.patient.name +
                           ' ' +
                           myBooking.patient.surname}
@@ -180,6 +184,7 @@ const DentistCard: React.FC = () => {
                       }
                       okText={'Yes'}
                       cancelText={'No'}
+                      cancelButtonProps={{ className: 'defaultButton' }}
                     >
                       <Tooltip placement='bottom' title='Reject Booking'>
                         <CloseCircleOutlined
@@ -206,6 +211,7 @@ const DentistCard: React.FC = () => {
                       }
                       okText={'Yes'}
                       cancelText={'No'}
+                      cancelButtonProps={{ className: 'defaultButton' }}
                     >
                       <Tooltip placement='bottom' title='Approve Booking'>
                         <CheckCircleOutlined
@@ -228,7 +234,7 @@ const DentistCard: React.FC = () => {
                           style={{ alignItems: 'baseline' }}
                         >
                           <Col>
-                            <Typography.Title level={5}>
+                            <Typography.Title level={5} className='darkText'>
                               {myBooking.title}
                             </Typography.Title>
                           </Col>
@@ -326,6 +332,7 @@ const DentistCard: React.FC = () => {
               setReplyModalOpen(false);
               setReplyText(booking.reply);
             }}
+            cancelButtonProps={{ className: 'defaultButton' }}
             okText={operation}
             confirmLoading={confirmReplyLoading}
           >

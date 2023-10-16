@@ -10,7 +10,7 @@ import {
   Table
 } from 'antd';
 import React from 'react';
-import { provinces, states } from '../../Utilities/Constants';
+import { colors, provinces, states } from '../../Utilities/Constants';
 import { ColumnsType } from 'antd/es/table';
 import { useAppDispatch, useAppSelector } from '../../Redux/hooks';
 import { changePatientDentists } from '../../Redux/features/patient/patient-slice';
@@ -102,6 +102,7 @@ export const Dentists: React.FC = () => {
                 : 'Are you sure you want to add this dentist to your dentists?'
             }
             okText='Yes'
+            cancelButtonProps={{ className: 'defaultButton' }}
             onConfirm={() => {
               if (shouldRemove) {
                 dispatch(
@@ -119,7 +120,14 @@ export const Dentists: React.FC = () => {
               }
             }}
           >
-            <a>{shouldRemove ? 'Remove' : 'Add'}</a>
+            <a
+              style={{
+                color: shouldRemove ? colors.iOrange : colors.iBlue,
+                fontWeight: 'bold'
+              }}
+            >
+              {shouldRemove ? 'Remove' : 'Add'}
+            </a>
           </Popconfirm>
         );
       }

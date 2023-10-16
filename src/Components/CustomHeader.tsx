@@ -1,9 +1,9 @@
 import React from 'react';
-import { Button, Col, Layout, Row, Typography, theme } from 'antd';
+import { Button, Col, Layout, Row, Typography } from 'antd';
 import { MenuFoldOutlined, MenuUnfoldOutlined } from '@ant-design/icons';
 import useScreenSize from '../Hooks/useScreenSize';
 import MobileNav from './MobileNav';
-import { Constants } from '../Utilities/Constants';
+import { Constants, colors } from '../Utilities/Constants';
 
 const { Header } = Layout;
 type CustomHeaderProps = {
@@ -15,12 +15,15 @@ const CustomHeader: React.FC<CustomHeaderProps> = ({
   collapsed,
   setCollapsed
 }) => {
-  const {
-    token: { colorBgContainer }
-  } = theme.useToken();
   const screenSize = useScreenSize();
   return (
-    <Header style={{ padding: 0, background: colorBgContainer }}>
+    <Header
+      style={{
+        padding: 0,
+        background: colors.bgBlack,
+        borderBottom: '1.5px solid white'
+      }}
+    >
       <Row
         gutter={screenSize.width < Constants.breakpoint ? 10 : 0}
         align={'middle'}
@@ -30,11 +33,11 @@ const CustomHeader: React.FC<CustomHeaderProps> = ({
             type='text'
             icon={collapsed ? <MenuUnfoldOutlined /> : <MenuFoldOutlined />}
             onClick={() => setCollapsed(!collapsed)}
+            className='iCollapseButton'
             style={{
-              fontSize: '16px',
+              display: screenSize.width < Constants.breakpoint ? 'none' : '',
               width: 64,
-              height: 64,
-              display: screenSize.width < Constants.breakpoint ? 'none' : ''
+              height: 64
             }}
           />
         </Col>
