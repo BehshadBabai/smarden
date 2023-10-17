@@ -31,9 +31,11 @@ import {
 } from '../../Redux/features/account/account-slice';
 import { openNotificationWithIcon } from '../../Utilities/Util';
 import { LocalStorageKeys } from '../../Utilities/Constants';
+import useScreenSize from '../../Hooks/useScreenSize';
 
 const DentistCard: React.FC = () => {
   const dispatch = useDispatch();
+  const screenSize = useScreenSize();
   const [descModalOpen, setDescModalOpen] = React.useState(false);
   const [replyModalOpen, setReplyModalOpen] = React.useState(false);
   const [confirmReplyLoading, setReplyConfirmLoading] = React.useState(false);
@@ -63,7 +65,7 @@ const DentistCard: React.FC = () => {
       const shown = JSON.parse(
         localStorage.getItem(LocalStorageKeys.tours.patient)
       )?.shown;
-      if (!shown) {
+      if (!shown && screenSize.width >= 550) {
         // do something
         localStorage.setItem(
           LocalStorageKeys.tours.patient,
@@ -155,7 +157,10 @@ const DentistCard: React.FC = () => {
                   }
                   style={{ width: 300 }}
                   actions={[
-                    <Tooltip placement='bottom' title='Write/Edit Reply'>
+                    <Tooltip
+                      placement='bottom'
+                      title={screenSize.width >= 750 ? 'Write/Edit Reply' : ''}
+                    >
                       <CommentOutlined
                         ref={index === 0 ? ref2 : null}
                         key='reply'
@@ -186,7 +191,10 @@ const DentistCard: React.FC = () => {
                       cancelText={'No'}
                       cancelButtonProps={{ className: 'defaultButton' }}
                     >
-                      <Tooltip placement='bottom' title='Reject Booking'>
+                      <Tooltip
+                        placement='bottom'
+                        title={screenSize.width >= 750 ? 'Reject Booking' : ''}
+                      >
                         <CloseCircleOutlined
                           key='reject'
                           ref={index === 0 ? ref3 : null}
@@ -213,7 +221,10 @@ const DentistCard: React.FC = () => {
                       cancelText={'No'}
                       cancelButtonProps={{ className: 'defaultButton' }}
                     >
-                      <Tooltip placement='bottom' title='Approve Booking'>
+                      <Tooltip
+                        placement='bottom'
+                        title={screenSize.width >= 750 ? 'Approve Booking' : ''}
+                      >
                         <CheckCircleOutlined
                           key={'approve'}
                           ref={index === 0 ? ref4 : null}

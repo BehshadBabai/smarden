@@ -36,7 +36,20 @@ const initialState: PatientState = {
     province: 'British Columbia',
     postalCode: 'V5C0M8'
   },
-  dentists: []
+  dentists: [
+    {
+      name: 'Reza',
+      surname: 'BT',
+      email: 'mbabai110@yahoo.com',
+      id: '5',
+      address1: '8181',
+      address2: 'chester',
+      country: 'Canada',
+      phone: '778',
+      province: 'British Columbia',
+      postalCode: 'V5X0J9'
+    }
+  ]
 };
 
 const patientSlice = createSlice({

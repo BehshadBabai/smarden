@@ -43,6 +43,7 @@ import { v4 as uuidv4 } from 'uuid';
 import { openNotificationWithIcon } from '../../Utilities/Util';
 import { LocalStorageKeys } from '../../Utilities/Constants';
 import { FcCalendar } from 'react-icons/fc';
+import useScreenSize from '../../Hooks/useScreenSize';
 
 const DentistCard: React.FC = () => {
   const { Option } = Select;
@@ -54,6 +55,7 @@ const DentistCard: React.FC = () => {
   const ref5 = React.useRef(null);
 
   const [tourOpen, setTourOpen] = React.useState(false);
+  const screenSize = useScreenSize();
   const [descModalOpen, setDescModalOpen] = React.useState(false);
   const [replyModalOpen, setReplyModalOpen] = React.useState(false);
   const [editModalOpen, setEditModalOpen] = React.useState(false);
@@ -79,7 +81,7 @@ const DentistCard: React.FC = () => {
       const shown = JSON.parse(
         localStorage.getItem(LocalStorageKeys.tours.dentist)
       )?.shown;
-      if (!shown) {
+      if (!shown && screenSize.width >= 550) {
         // do something
         localStorage.setItem(
           LocalStorageKeys.tours.dentist,
@@ -196,7 +198,10 @@ const DentistCard: React.FC = () => {
                 }
                 style={{ width: 300 }}
                 actions={[
-                  <Tooltip placement='bottom' title='View Dentist Reply'>
+                  <Tooltip
+                    placement='bottom'
+                    title={screenSize.width >= 750 ? 'View Dentist Reply' : ''}
+                  >
                     <CommentOutlined
                       ref={index === 0 ? ref2 : null}
                       key='reply'
@@ -213,7 +218,10 @@ const DentistCard: React.FC = () => {
                       }}
                     />
                   </Tooltip>,
-                  <Tooltip placement='bottom' title='Edit Description'>
+                  <Tooltip
+                    placement='bottom'
+                    title={screenSize.width >= 750 ? 'Edit Description' : ''}
+                  >
                     <EditOutlined
                       ref={index === 0 ? ref3 : null}
                       key='edit'
@@ -239,7 +247,10 @@ const DentistCard: React.FC = () => {
                     cancelText={'No'}
                     cancelButtonProps={{ className: 'defaultButton' }}
                   >
-                    <Tooltip placement='bottom' title='Remove Booking'>
+                    <Tooltip
+                      placement='bottom'
+                      title={screenSize.width >= 750 ? 'Remove Booking' : ''}
+                    >
                       <DeleteOutlined
                         key={'delete'}
                         ref={index === 0 ? ref4 : null}
