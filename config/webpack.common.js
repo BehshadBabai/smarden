@@ -7,6 +7,8 @@ const { GitRevisionPlugin } = require('git-revision-webpack-plugin');
 const FS = require('fs');
 const Luxon = require('luxon');
 
+const Dotenv = require('dotenv-webpack');
+
 const buildEnv = (() => {
   const configPath = './config/';
   const buildEnvPath = 'buildEnv.json';
@@ -104,7 +106,12 @@ module.exports = {
     path: path.resolve('dist')
   },
   resolve: {
-    extensions: ['.js', '.jsx', '.ts', '.tsx', '.scss', '.css', '.html']
+    extensions: ['.js', '.jsx', '.ts', '.tsx', '.scss', '.css', '.html'],
+    fallback: {
+      fs: false,
+      os: false,
+      path: false
+    }
   },
   module: {
     rules
@@ -127,6 +134,7 @@ module.exports = {
           }
         }
       ]
-    })
+    }),
+    new Dotenv()
   ]
 };
