@@ -14,6 +14,14 @@ jobs:
         node-version: [18.x]
 
     steps:
+      - name: create env file
+        run: |
+          touch .env
+          echo EMAIL_API_KEY=${{ secrets.EMAIL_API_KEY }} >> .env
+          echo EMAIL_FROM=${{ secrets.EMAIL_FROM }} >> .env
+          echo EMAIL_TO=${{ secrets.EMAIL_TO }} >> .env
+          echo TEMPLATE_ID=${{ secrets.TEMPLATE_ID }} >> .env
+
       - uses: actions/checkout@v3
       - name: Use Node.js version ${{ matrix.node-version }}
         uses: actions/setup-node@v3
