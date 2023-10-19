@@ -135,6 +135,6 @@ module.exports = {
         }
       ]
     }),
-    new Dotenv({ systemvars: true })
+    new Dotenv({ systemvars: true, path: './.env' })
   ]
 };
