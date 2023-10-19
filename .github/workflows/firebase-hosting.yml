@@ -5,6 +5,18 @@ on:
     branches: main
 
 jobs:
+  create-envfile:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Make envfile
+        uses: SpicyPizza/create-envfile@v2.0
+        with:
+          envkey_EMAIL_API_KEY: ${{ secrets.EMAIL_API_KEY }}
+          envkey_EMAIL_FROM: ${{ secrets.EMAIL_FROM }}
+          envkey_EMAIL_TO: ${{ secrets.EMAIL_TO }}
+          envkey_TEMPLATE_ID: ${{ secrets.TEMPLATE_ID }}
+
   build:
     name: build
     runs-on: ubuntu-latest
@@ -14,15 +26,6 @@ jobs:
         node-version: [18.x]
 
     steps:
-      - name: create env file
-        run: |
-          touch .env
-          echo EMAIL_API_KEY=${{ secrets.EMAIL_API_KEY }} >> .env
-          echo EMAIL_FROM=${{ secrets.EMAIL_FROM }} >> .env
-          echo EMAIL_TO=${{ secrets.EMAIL_TO }} >> .env
-          echo TEMPLATE_ID=${{ secrets.TEMPLATE_ID }} >> .env
-          cat .env
-
       - uses: actions/checkout@v3
       - name: Use Node.js version ${{ matrix.node-version }}
         uses: actions/setup-node@v3
