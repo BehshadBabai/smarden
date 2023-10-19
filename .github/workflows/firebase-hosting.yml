@@ -14,6 +14,12 @@ jobs:
         node-version: [18.x]
 
     steps:
+      - uses: actions/checkout@v3
+      - name: Use Node.js version ${{ matrix.node-version }}
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ matrix.node-version }}
+
       - name: Make envfile
         run: |
           touch .env
@@ -21,12 +27,6 @@ jobs:
           echo EMAIL_FROM=${{ secrets.EMAIL_FROM }} >> .env
           echo EMAIL_TO=${{ secrets.EMAIL_TO }} >> .env
           echo TEMPLATE_ID=${{ secrets.TEMPLATE_ID }} >> .env
-
-      - uses: actions/checkout@v3
-      - name: Use Node.js version ${{ matrix.node-version }}
-        uses: actions/setup-node@v3
-        with:
-          node-version: ${{ matrix.node-version }}
 
       - run: npm i
       - run: npm install -g firebase-tools
