@@ -113,7 +113,7 @@ const DentistCard: React.FC = () => {
           <Col span={24} style={{ display: 'flex', justifyContent: 'center' }}>
             <Empty
               description={
-                <p style={{ color: 'white' }}>
+                <p className='white-empty'>
                   You have no current bookings, please check back later!
                 </p>
               }

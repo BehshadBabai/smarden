@@ -1,6 +1,7 @@
 import React from 'react';
 import {
   CalendarOutlined,
+  LockOutlined,
   MenuOutlined,
   QuestionCircleOutlined,
   SolutionOutlined,
@@ -14,7 +15,7 @@ import useScreenSize from '../Hooks/useScreenSize';
 import { useAppDispatch, useAppSelector } from '../Redux/hooks';
 import { changeRoute } from '../Redux/features/app/app-slice';
 import { Constants, colors } from '../Utilities/Constants';
-import { getInitials } from '../Utilities/Util';
+import { capitalizeFirstLetter, getInitials } from '../Utilities/Util';
 
 const MobileNav: React.FC = () => {
   const navigate = useNavigate();
@@ -95,9 +96,17 @@ const MobileNav: React.FC = () => {
               label: 'Account'
             },
             {
-              key: account.type === 'dentist' ? 'patients' : 'dentists',
+              key: account.loggedIn
+                ? account.type === 'patient'
+                  ? 'dentists'
+                  : 'patients'
+                : 'dentists/patients',
               icon: <TeamOutlined />,
-              label: account.type === 'dentist' ? 'Patients' : 'Dentists',
+              label: account.loggedIn
+                ? capitalizeFirstLetter(
+                    account.type === 'patient' ? 'dentists' : 'patients'
+                  )
+                : 'Dentists/Patients',
               disabled: !account.loggedIn
             },
             {

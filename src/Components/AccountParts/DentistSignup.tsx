@@ -8,7 +8,7 @@ import { BsGlobe, BsPhone, BsSignpost } from 'react-icons/bs';
 import { GoMail } from 'react-icons/go';
 import { useAppDispatch } from '../../Redux/hooks';
 import { toggleHasAccount } from '../../Redux/features/account/account-slice';
-const AccountRadio: React.FC = () => {
+const DentistSignup: React.FC = () => {
   const dispatch = useAppDispatch();
   return (
     <Row justify={'center'} gutter={[0, 40]}>
@@ -107,4 +107,4 @@ const AccountRadio: React.FC = () => {
   );
 };
 
-export default AccountRadio;
+export default DentistSignup;

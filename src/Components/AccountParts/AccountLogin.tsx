@@ -1,33 +1,65 @@
 import React from 'react';
 import { LockOutlined, MailOutlined, UserOutlined } from '@ant-design/icons';
-import { Button, Checkbox, Form, Input, Row, Space, Typography } from 'antd';
+import {
+  Button,
+  Checkbox,
+  Form,
+  Input,
+  Row,
+  Space,
+  Typography,
+  message
+} from 'antd';
 import { useAppDispatch, useAppSelector } from '../../Redux/hooks';
 import AccountSignUp from './AccountSignUp';
-import AccountRadio from './AccountRadio';
-import {
-  toggleHasAccount,
-  toggleLoggedIn
-} from '../../Redux/features/account/account-slice';
+import { toggleHasAccount } from '../../Redux/features/account/account-slice';
 import { changeRoute } from '../../Redux/features/app/app-slice';
 import { useNavigate } from 'react-router-dom';
+import { auth, firestore } from '../../Firebase/firebase';
+import { signInWithEmailAndPassword } from 'firebase/auth';
+import { firebaseErrorCodes } from '../../Utilities/Constants';
+import { doc, getDoc } from 'firebase/firestore';
+import { syncRedux } from '../../Utilities/Util';
 
 const AccountLogin: React.FC = () => {
-  const hasAccount = useAppSelector((state) => state.account.hasAccount);
+  const account = useAppSelector((state) => state.account);
   const dispatch = useAppDispatch();
+  const [loginLoading, setLoginLoading] = React.useState(false);
+  const [api, contextHolder] = message.useMessage();
   const navigate = useNavigate();
 
-  const onFinish = (values: any) => {
-    // if (login successfull)
-    dispatch(toggleLoggedIn());
-    dispatch(changeRoute('booking'));
-    navigate('./booking');
-    // else, show prompt with reason
-    console.log('Received values of form: ', values);
+  const onFinish = async (values: any) => {
+    setLoginLoading(true);
+    try {
+      const credentials = await signInWithEmailAndPassword(
+        auth,
+        values?.email,
+        values?.password
+      );
+      // const uid = credentials.user.uid;
+      // const docRef = doc(firestore, 'users', uid);
+      // const docSnap = await getDoc(docRef);
+      // if (docSnap.exists()) {
+      //   const data = docSnap.data();
+      //   syncRedux(data, account, dispatch);
+      // }
+      message.success('Login Successful');
+      dispatch(changeRoute('booking'));
+      navigate('./booking');
+    } catch (error) {
+      message.error(
+        error.code === firebaseErrorCodes.invalidLogin
+          ? 'Invalid Username/Password'
+          : 'Failed to Login'
+      );
+    } finally {
+      setLoginLoading(false);
+    }
   };
 
-  return hasAccount ? (
+  return account.hasAccount ? (
     <Space direction='vertical' size={'large'} style={{ width: '85%' }}>
-      <AccountRadio text='Login' />
+      {contextHolder}
       <Form
         name='normal_login'
         className='login-form'
@@ -48,7 +80,7 @@ const AccountLogin: React.FC = () => {
           name='password'
           rules={[{ required: true, message: 'Please input your Password!' }]}
         >
-          <Input
+          <Input.Password
             prefix={<LockOutlined className='site-form-item-icon' />}
             type='password'
             placeholder='Password'
@@ -87,6 +119,7 @@ const AccountLogin: React.FC = () => {
                   onClick={() => {
                     dispatch(toggleHasAccount());
                   }}
+                  loading={loginLoading}
                 >
                   Register
                 </Button>

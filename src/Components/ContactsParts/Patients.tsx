@@ -31,7 +31,7 @@ export const Patients: React.FC = () => {
             setPatients(allPatients);
           }
         }}
-        style={{ width: 200 }}
+        style={{ width: 200, background: 'white' }}
         addonAfter={<FilterOutlined />}
         disabled={filteredDisabled}
       />
@@ -90,7 +90,11 @@ export const Patients: React.FC = () => {
         />
       ) : (
         <Empty
-          description='You currently have no patients, please check back later!'
+          description={
+            <p className='white-empty'>
+              You currently have no patients, please check back later!
+            </p>
+          }
           style={{ fontSize: '1.3em' }}
           imageStyle={{ height: '200px' }}
         />

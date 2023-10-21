@@ -1,17 +1,21 @@
-import { Button, Col, Row, Space, Typography } from 'antd';
+import { Button, Col, Row, Space, Typography, message } from 'antd';
 import React from 'react';
 import { useAppDispatch, useAppSelector } from '../../Redux/hooks';
 import { capitalizeFirstLetter } from '../../Utilities/Util';
-import { toggleLoggedIn } from '../../Redux/features/account/account-slice';
 import PatientForm from './PatientForm';
 import DentistForm from './DentistFrom';
+import { signOut } from 'firebase/auth';
+import { auth } from '../../Firebase/firebase';
+import { toggleLoggedIn } from '../../Redux/features/account/account-slice';
 
 const AccountLoggedIn: React.FC = () => {
   const type = useAppSelector((state) => state.account.type);
+  const [api, contextHolder] = message.useMessage();
   const dispatch = useAppDispatch();
 
   return (
     <Space direction='vertical' size={'large'} style={{ width: '100%' }}>
+      {contextHolder}
       <Row align={'middle'} justify={'space-between'}>
         <Col>
           <Typography.Text>
@@ -22,10 +26,14 @@ const AccountLoggedIn: React.FC = () => {
           <Button
             type='primary'
             className='login-form-button'
-            onClick={() => {
-              // if logout is successful
-              dispatch(toggleLoggedIn());
-              // else show prompt and reason
+            onClick={async () => {
+              try {
+                await signOut(auth);
+                message.success('Log Out Successful');
+                dispatch(toggleLoggedIn());
+              } catch (error) {
+                message.error('Log Out Failed');
+              }
             }}
           >
             Log Out
