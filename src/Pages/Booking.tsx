@@ -1,14 +1,32 @@
 import React from 'react';
-import { Col, Row, Space, Typography } from 'antd';
-import { useAppSelector } from '../Redux/hooks';
+import { useAppDispatch, useAppSelector } from '../Redux/hooks';
 import PatientCard from '../Components/BookingParts/PatientCard';
 import DentistCard from '../Components/BookingParts/DentistCard';
+import { useNavigate } from 'react-router-dom';
+import { changeRoute } from '../Redux/features/app/app-slice';
 
 const Booking: React.FC = () => {
   const account = useAppSelector((state) => state.account);
+  const dispatch = useAppDispatch();
   const type = account.type;
+  const navigate = useNavigate();
 
-  return type === 'patient' ? <DentistCard /> : <PatientCard />;
+  React.useEffect(() => {
+    if (!account.loggedIn) {
+      navigate('/');
+      dispatch(changeRoute('/'));
+    }
+  }, []);
+
+  return account.loggedIn ? (
+    type === 'patient' ? (
+      <DentistCard />
+    ) : (
+      <PatientCard />
+    )
+  ) : (
+    <></>
+  );
 };
 
 export default Booking;

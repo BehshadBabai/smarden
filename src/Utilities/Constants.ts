@@ -132,3 +132,7 @@ export const themeConstant: ThemeConfig = {
     colorPrimary: colors.iBlue
   }
 };
+
+export const firebaseErrorCodes = {
+  invalidLogin: 'auth/invalid-login-credentials'
+};

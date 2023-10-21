@@ -77,3 +77,20 @@
 .addBookingForm .ant-form-item .ant-row .ant-col label {
   color: black;
 }
+
+.ant-spin-text {
+  font-size: 20px !important;
+  margin-top: 10px;
+}
+
+.ant-result-title {
+  color: white !important;
+}
+
+.ant-result-subtitle {
+  color: white !important;
+}
+
+.white-empty {
+  color: white !important;
+}

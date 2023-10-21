@@ -2,7 +2,7 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { PatientInfo } from '../patient/patient-slice';
 import { DentistInfo } from '../dentist/dentist-slice';
 
-type AccountType = 'dentist' | 'patient';
+export type AccountType = 'dentist' | 'patient';
 type BookingStatus = 'approved' | 'pending' | 'rejected';
 type BookingPayload<T> = { id: string; data: T };
 
@@ -18,7 +18,7 @@ export type Booking = {
   status: BookingStatus;
 };
 
-type AccountState = {
+export type AccountState = {
   type: AccountType;
   loggedIn: boolean;
   hasAccount: boolean;
@@ -27,8 +27,7 @@ type AccountState = {
 
 const initialState: AccountState = {
   type: 'patient',
-  // chnage to false at very end
-  loggedIn: true,
+  loggedIn: false,
   hasAccount: true,
   bookings: []
 };
@@ -40,12 +39,8 @@ const accountSlice = createSlice({
     toggleLoggedIn(state) {
       state.loggedIn = !state.loggedIn;
     },
-    toggleType(state) {
-      if (state.type == 'dentist') {
-        state.type = 'patient';
-      } else {
-        state.type = 'dentist';
-      }
+    changeType(state, action: PayloadAction<AccountType>) {
+      state.type = action.payload;
     },
     toggleHasAccount(state) {
       state.hasAccount = !state.hasAccount;
@@ -94,7 +89,7 @@ const accountSlice = createSlice({
 
 export const {
   toggleLoggedIn,
-  toggleType,
+  changeType,
   toggleHasAccount,
   addBooking,
   deleteBooking,

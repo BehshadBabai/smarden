@@ -2,6 +2,7 @@ import React from 'react';
 import { Avatar, Layout, Menu } from 'antd';
 import {
   CalendarOutlined,
+  LockOutlined,
   QuestionCircleOutlined,
   SolutionOutlined,
   TeamOutlined,
@@ -10,7 +11,7 @@ import {
 import { useNavigate } from 'react-router-dom';
 import { useAppDispatch, useAppSelector } from '../Redux/hooks';
 import { changeRoute } from '../Redux/features/app/app-slice';
-import { getInitials } from '../Utilities/Util';
+import { capitalizeFirstLetter, getInitials } from '../Utilities/Util';
 import { colors } from '../Utilities/Constants';
 
 type LeftNavProps = { collapsed: boolean; hidden: boolean };
@@ -77,9 +78,17 @@ const LeftNavigation: React.FC<LeftNavProps> = ({ collapsed, hidden }) => {
             label: 'Account'
           },
           {
-            key: account.type === 'dentist' ? 'patients' : 'dentists',
+            key: account.loggedIn
+              ? account.type === 'patient'
+                ? 'dentists'
+                : 'patients'
+              : 'dentists/patients',
             icon: <TeamOutlined />,
-            label: account.type === 'dentist' ? 'Patients' : 'Dentists',
+            label: account.loggedIn
+              ? capitalizeFirstLetter(
+                  account.type === 'patient' ? 'dentists' : 'patients'
+                )
+              : 'Dentists/Patients',
             disabled: !account.loggedIn
           },
           {
