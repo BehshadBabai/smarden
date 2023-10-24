@@ -29,7 +29,7 @@ import {
   changeBookingReply,
   changeBookingStatus
 } from '../../Redux/features/account/account-slice';
-import { openNotificationWithIcon } from '../../Utilities/Util';
+import { addOrEditDoc, openNotificationWithIcon } from '../../Utilities/Util';
 import { LocalStorageKeys } from '../../Utilities/Constants';
 import useScreenSize from '../../Hooks/useScreenSize';
 
@@ -175,18 +175,17 @@ const DentistCard: React.FC = () => {
                       title='Reject Booking'
                       icon={<WarningOutlined />}
                       description='Are you sure you want to reject this booking?'
-                      onConfirm={() =>
-                        new Promise((resolve) => {
-                          setTimeout(() => resolve(null), 3000);
-                        }).then(() => {
-                          dispatch(
-                            changeBookingStatus({
-                              id: myBooking.id,
-                              data: 'rejected'
-                            })
-                          );
-                        })
-                      }
+                      onConfirm={async () => {
+                        await addOrEditDoc('edit', 'bookings', myBooking.id, {
+                          status: 'rejected'
+                        });
+                        dispatch(
+                          changeBookingStatus({
+                            id: myBooking.id,
+                            data: 'rejected'
+                          })
+                        );
+                      }}
                       okText={'Yes'}
                       cancelText={'No'}
                       cancelButtonProps={{ className: 'defaultButton' }}
@@ -205,18 +204,17 @@ const DentistCard: React.FC = () => {
                       title='Approve Booking'
                       icon={<WarningOutlined />}
                       description='Are you sure you want to approve this booking?'
-                      onConfirm={() =>
-                        new Promise((resolve) => {
-                          setTimeout(() => resolve(null), 3000);
-                        }).then(() => {
-                          dispatch(
-                            changeBookingStatus({
-                              id: myBooking.id,
-                              data: 'approved'
-                            })
-                          );
-                        })
-                      }
+                      onConfirm={async () => {
+                        await addOrEditDoc('edit', 'bookings', myBooking.id, {
+                          status: 'approved'
+                        });
+                        dispatch(
+                          changeBookingStatus({
+                            id: myBooking.id,
+                            data: 'approved'
+                          })
+                        );
+                      }}
                       okText={'Yes'}
                       cancelText={'No'}
                       cancelButtonProps={{ className: 'defaultButton' }}
@@ -276,7 +274,12 @@ const DentistCard: React.FC = () => {
                           </Col>
                         </Row>
                       }
-                      description={`Booking Date: ${myBooking.time}`}
+                      description={
+                        <>
+                          <p>{`Booking Date: ${myBooking.date}`}</p>
+                          <p>{`Booking Time: ${myBooking.time}`}</p>
+                        </>
+                      }
                     />
                     <Typography.Link
                       onClick={() => {
@@ -322,22 +325,33 @@ const DentistCard: React.FC = () => {
           <Modal
             title={booking.reply ? 'Edit Your Reply:' : 'Write Your Reply:'}
             open={replyModalOpen}
-            onOk={() => {
-              setReplyConfirmLoading(true);
-              setTimeout(() => {
-                setReplyModalOpen(false);
-                setReplyConfirmLoading(false);
+            onOk={async () => {
+              try {
+                setReplyConfirmLoading(true);
+                await addOrEditDoc('edit', 'bookings', booking.id, {
+                  reply: replyText
+                });
                 dispatch(
                   changeBookingReply({ id: booking.id, data: replyText })
                 );
-                // show error notification on catch or something
                 openNotificationWithIcon(
                   'success',
                   api,
                   operation === 'Save' ? 'saved' : 'sent',
                   'reply'
                 );
-              }, 2000);
+                setReplyModalOpen(false);
+              } catch (error) {
+                api.error({
+                  message: `${booking.reply ? 'Edit' : 'Write'} Failed`,
+                  description: `Failed to ${
+                    booking.reply ? 'Edit' : 'Write'
+                  } your reply, Please try again later`,
+                  placement: 'top'
+                });
+              } finally {
+                setReplyConfirmLoading(false);
+              }
             }}
             onCancel={() => {
               setReplyModalOpen(false);

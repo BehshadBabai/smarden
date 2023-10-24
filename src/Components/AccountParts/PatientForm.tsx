@@ -25,9 +25,8 @@ import { useNavigate } from 'react-router-dom';
 import { changeRoute } from '../../Redux/features/app/app-slice';
 import { provinces, states } from '../../Utilities/Constants';
 import { createUserWithEmailAndPassword } from 'firebase/auth';
-import { auth, firestore } from '../../Firebase/firebase';
-import { collection, doc, setDoc } from 'firebase/firestore';
-import { filterObject } from '../../Utilities/Util';
+import { auth } from '../../Firebase/firebase';
+import { addOrEditDoc, parseValues } from '../../Utilities/Util';
 
 const { Option } = Select;
 
@@ -44,47 +43,47 @@ const PatientForm: React.FC = () => {
   const [provState, setProvState] = React.useState(patientInfo?.province);
   const [api, contextHolder] = message.useMessage();
   const options = country === 'Canada' ? provinces : states;
+
   const onFinish = async (values: any) => {
-    const result = values?.dob
-      ? ({
-          ...values,
-          dob: values.dob.format('YYYY-MM-DD'),
-          province: provState
-        } as PatientInfo & { password: string })
-      : ({ ...values, province: provState } as PatientInfo & {
-          password: string;
-        });
+    if (values?.dob) {
+      values.dob = values.dob.format('YYYY-MM-DD');
+    }
+    if (provState) {
+      values.province = provState;
+    }
     setLoading(true);
     // update dob date field of values
     if (!account.loggedIn) {
       try {
         const credentials = await createUserWithEmailAndPassword(
           auth,
-          result.email,
-          result.password
+          values.email,
+          values.password
         );
-        const patientCollection = collection(firestore, 'users');
-        const userRef = doc(patientCollection, credentials.user.uid);
-        const wholeResult = {
-          name: result.name,
-          surname: result.surname,
-          phone: result.phone,
-          gender: result.gender,
-          dob: result.dob,
-          address1: result.address1,
-          address2: result.address2,
-          country: result.country,
-          province: result.province,
-          postalCode: result.postalCode,
-          type: 'patient'
-        };
-        await setDoc(userRef, filterObject(wholeResult));
-        message.success('Registration Successful');
-        dispatch(changeType('patient'));
-        dispatch(toggleHasAccount());
-        dispatch(changePatientInfo(result));
-        dispatch(changeRoute('booking'));
-        navigate('./booking');
+        const result = parseValues(values, false, true);
+        addOrEditDoc('add', 'users', credentials.user.uid, {
+          ...result,
+          type: 'patient',
+          dentists: []
+        })
+          .then(() => {
+            message.success('Registration Successful');
+            dispatch(changeType('patient'));
+            dispatch(toggleHasAccount());
+            dispatch(
+              changePatientInfo({
+                ...result,
+                id: credentials.user.uid,
+                email: values.email,
+                phone: result.phone
+              })
+            );
+            dispatch(changeRoute('booking'));
+            navigate('./booking');
+          })
+          .catch(() => {
+            message.error('Something went wrong, Please try again later');
+          });
       } catch (error) {
         message.error(
           error.code === 'auth/email-already-in-use'
@@ -95,20 +94,32 @@ const PatientForm: React.FC = () => {
         setLoading(false);
       }
     } else {
-      dispatch(changePatientInfo({ ...result, id: patientInfo.id }));
+      try {
+        const result = parseValues(values, true, true);
+        addOrEditDoc('edit', 'users', patientInfo.id, {
+          ...result,
+          type: 'patient'
+        })
+          .then(() => {
+            message.success('Update Successful');
+            dispatch(
+              changePatientInfo({
+                ...result,
+                id: patientInfo.id,
+                email: patientInfo.email,
+                phone: patientInfo.phone
+              })
+            );
+          })
+          .catch(() => {
+            message.error('Failed to Save Info');
+          });
+      } catch (error) {
+        message.error('Failed to Save Info');
+      } finally {
+        setLoading(false);
+      }
     }
-
-    // if (!account.loggedIn) {
-    //   // change db first and signup user
-    //   dispatch(toggleHasAccount());
-    //   dispatch(toggleLoggedIn());
-    //   dispatch(changePatientInfo(result));
-    //   dispatch(changeRoute('booking'));
-    //   navigate('./booking');
-    // } else {
-    //   // on save, change db first
-    //   dispatch(changePatientInfo({ ...result, id: patientInfo.id }));
-    // }
   };
 
   const prefixSelector = (
@@ -142,16 +153,12 @@ const PatientForm: React.FC = () => {
             <Form.Item
               name='name'
               label='Name'
-              rules={
-                account.loggedIn
-                  ? []
-                  : [
-                      {
-                        required: true,
-                        message: 'Please input your name!'
-                      }
-                    ]
-              }
+              rules={[
+                {
+                  required: true,
+                  message: 'Please input your name!'
+                }
+              ]}
             >
               <Input />
             </Form.Item>
@@ -160,16 +167,12 @@ const PatientForm: React.FC = () => {
             <Form.Item
               name='surname'
               label='Surname'
-              rules={
-                account.loggedIn
-                  ? []
-                  : [
-                      {
-                        required: true,
-                        message: 'Please input your surname!'
-                      }
-                    ]
-              }
+              rules={[
+                {
+                  required: true,
+                  message: 'Please input your surname!'
+                }
+              ]}
             >
               <Input />
             </Form.Item>
@@ -335,7 +338,7 @@ const PatientForm: React.FC = () => {
             </Form.Item>
           </Col>
           <Col xs={24} lg={9}>
-            <Form.Item label='Province'>
+            <Form.Item label={country === 'Canada' ? 'Province' : 'State'}>
               <Select
                 value={provState}
                 onChange={(newValue) => {
@@ -393,6 +396,7 @@ const PatientForm: React.FC = () => {
                   type='primary'
                   htmlType='submit'
                   className='login-form-button'
+                  loading={loading}
                 >
                   Save
                 </Button>

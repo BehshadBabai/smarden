@@ -11,12 +11,16 @@ import Booking from './Pages/Booking';
 import Feedback from './Pages/Feedback';
 import { Constants, LocalStorageKeys, colors } from './Utilities/Constants';
 import { themeConstant } from './Utilities/Constants';
+import { useDispatch } from 'react-redux';
+import { changeAllDentists } from './Redux/features/app/app-slice';
+import { fetchAllDocuments } from './Utilities/Util';
 
 const { Content } = Layout;
 
 const App = () => {
   const screenSize = useScreenSize();
   const [collapsed, setCollapsed] = React.useState(false);
+  const dispatch = useDispatch();
 
   const bookingTourDentist = {
     shown: false
@@ -44,6 +48,18 @@ const App = () => {
       );
     }
   }
+
+  React.useEffect(() => {
+    fetchAllDocuments('dentists').then((docs) => {
+      const result = [];
+      docs.forEach((doc) => {
+        const data = doc.data();
+        const id = doc.id;
+        result.push({ ...data, id });
+      });
+      dispatch(changeAllDentists(result));
+    });
+  }, []);
 
   return (
     <BrowserRouter>

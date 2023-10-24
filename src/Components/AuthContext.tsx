@@ -1,13 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import { AuthContext } from '../Firebase/context';
-import { auth, firestore } from '../Firebase/firebase';
+import { auth } from '../Firebase/firebase';
 import { User } from 'firebase/auth';
 import Loading from '../Loading';
 import { useDispatch } from 'react-redux';
 import { toggleLoggedIn } from '../Redux/features/account/account-slice';
 import { useAppSelector } from '../Redux/hooks';
-import { doc, getDoc } from 'firebase/firestore';
-import { syncRedux } from '../Utilities/Util';
+import { fetchSingleDocument, syncBooking, syncUser } from '../Utilities/Util';
 
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
   children
@@ -22,11 +21,14 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
       setUser(firebaseUser);
       if (firebaseUser) {
         const uid = firebaseUser.uid;
-        const docRef = doc(firestore, 'users', uid);
-        const docSnap = await getDoc(docRef);
-        if (docSnap.exists()) {
-          const data = docSnap.data();
-          syncRedux(data, dispatch);
+        const snapShot = await fetchSingleDocument('users', uid);
+        if (snapShot.exists()) {
+          const data = snapShot.data();
+          syncUser(data, dispatch, {
+            id: firebaseUser.uid,
+            email: firebaseUser.email
+          });
+          syncBooking(dispatch);
         }
         if (!loggedIn) {
           dispatch(toggleLoggedIn());
