@@ -22,35 +22,8 @@ export type PatientState = {
 };
 
 const initialState: PatientState = {
-  info: { name: null, surname: null, email: null, id: '1', phone: null },
-  // {
-  //   name: 'Behshad',
-  //   surname: 'Babai',
-  //   email: 'b@b.com',
-  //   id: '8',
-  //   phone: '2366888933',
-  //   address1: '4720',
-  //   address2: '4205',
-  //   country: 'Canada',
-  //   dob: '2001-04-09',
-  //   gender: 'male',
-  //   province: 'British Columbia',
-  //   postalCode: 'V5C0M8'
-  // }
-  dentists: [
-    // {
-    //   name: 'Reza',
-    //   surname: 'BT',
-    //   email: 'mbabai110@yahoo.com',
-    //   id: '5',
-    //   address1: '8181',
-    //   address2: 'chester',
-    //   country: 'Canada',
-    //   phone: '778',
-    //   province: 'British Columbia',
-    //   postalCode: 'V5X0J9'
-    // }
-  ]
+  info: null,
+  dentists: []
 };
 
 const patientSlice = createSlice({

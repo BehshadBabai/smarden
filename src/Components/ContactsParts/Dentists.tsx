@@ -13,8 +13,13 @@ import React from 'react';
 import { colors, provinces, states } from '../../Utilities/Constants';
 import { ColumnsType } from 'antd/es/table';
 import { useAppDispatch, useAppSelector } from '../../Redux/hooks';
-import { changePatientDentists } from '../../Redux/features/patient/patient-slice';
+import {
+  PatientInfo,
+  PatientState,
+  changePatientDentists
+} from '../../Redux/features/patient/patient-slice';
 import { DentistInfo } from '../../Redux/features/dentist/dentist-slice';
+import { addOrEditDoc, fetchSingleDocument } from '../../Utilities/Util';
 
 const { Option } = Select;
 
@@ -34,6 +39,7 @@ export const Dentists: React.FC = () => {
   const provStateOptions = country === 'United States' ? states : provinces;
   const allDentists = useAppSelector((state) => state.app.allDentists);
   const patientDentists = useAppSelector((state) => state.patient.dentists);
+  const patientInfo = useAppSelector((state) => state.patient.info);
   const otherDentists = allDentists.filter(
     (el) => !patientDentists.some((pEl) => el.id === pEl.id)
   );
@@ -103,20 +109,55 @@ export const Dentists: React.FC = () => {
             }
             okText='Yes'
             cancelButtonProps={{ className: 'defaultButton' }}
-            onConfirm={() => {
+            onConfirm={async () => {
               if (shouldRemove) {
-                dispatch(
-                  changePatientDentists(
-                    patientDentists.filter((el) => el.id !== record.key)
-                  )
+                const result = patientDentists.filter(
+                  (el) => el.id !== record.key
                 );
+                addOrEditDoc('edit', 'users', patientInfo.id, {
+                  dentists: result
+                }).then(async () => {
+                  const snapShot = await fetchSingleDocument(
+                    'users',
+                    record.key
+                  );
+                  const data = snapShot.data();
+                  addOrEditDoc('edit', 'users', record.key, {
+                    patients: data.patients
+                      .map((el: PatientState) => {
+                        delete el.dentists;
+                        return el;
+                      })
+                      .filter((el: PatientInfo) => el.id !== patientInfo.id)
+                  }).then(() => {
+                    dispatch(changePatientDentists(result));
+                  });
+                });
               } else {
                 const dentistToAdd = otherDentists.find(
                   (el) => el.id === record.key
                 );
-                dispatch(
-                  changePatientDentists([dentistToAdd, ...patientDentists])
-                );
+                const result = [dentistToAdd, ...patientDentists];
+                addOrEditDoc('edit', 'users', patientInfo.id, {
+                  dentists: result
+                }).then(async () => {
+                  const snapShot = await fetchSingleDocument(
+                    'users',
+                    record.key
+                  );
+                  const data = snapShot.data();
+                  addOrEditDoc('edit', 'users', record.key, {
+                    patients: [
+                      patientInfo,
+                      ...data.patients.map((el: PatientState) => {
+                        delete el.dentists;
+                        return el;
+                      })
+                    ]
+                  }).then(() => {
+                    dispatch(changePatientDentists(result));
+                  });
+                });
               }
             }}
           >

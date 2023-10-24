@@ -15,11 +15,9 @@ import AccountSignUp from './AccountSignUp';
 import { toggleHasAccount } from '../../Redux/features/account/account-slice';
 import { changeRoute } from '../../Redux/features/app/app-slice';
 import { useNavigate } from 'react-router-dom';
-import { auth, firestore } from '../../Firebase/firebase';
+import { auth } from '../../Firebase/firebase';
 import { signInWithEmailAndPassword } from 'firebase/auth';
 import { firebaseErrorCodes } from '../../Utilities/Constants';
-import { doc, getDoc } from 'firebase/firestore';
-import { syncRedux } from '../../Utilities/Util';
 
 const AccountLogin: React.FC = () => {
   const account = useAppSelector((state) => state.account);
@@ -31,18 +29,7 @@ const AccountLogin: React.FC = () => {
   const onFinish = async (values: any) => {
     setLoginLoading(true);
     try {
-      const credentials = await signInWithEmailAndPassword(
-        auth,
-        values?.email,
-        values?.password
-      );
-      // const uid = credentials.user.uid;
-      // const docRef = doc(firestore, 'users', uid);
-      // const docSnap = await getDoc(docRef);
-      // if (docSnap.exists()) {
-      //   const data = docSnap.data();
-      //   syncRedux(data, account, dispatch);
-      // }
+      await signInWithEmailAndPassword(auth, values?.email, values?.password);
       message.success('Login Successful');
       dispatch(changeRoute('booking'));
       navigate('./booking');

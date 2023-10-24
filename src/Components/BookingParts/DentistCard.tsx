@@ -21,6 +21,7 @@ import {
   Select,
   Space,
   Tag,
+  TimePicker,
   Tooltip,
   Tour,
   TourProps,
@@ -39,14 +40,24 @@ import {
 import TextArea from 'antd/es/input/TextArea';
 import Meta from 'antd/es/card/Meta';
 import dayjs from 'dayjs';
-import { v4 as uuidv4 } from 'uuid';
-import { openNotificationWithIcon } from '../../Utilities/Util';
+import {
+  addDocWithoutId,
+  addOrEditDoc,
+  deleteDocument,
+  openNotificationWithIcon
+} from '../../Utilities/Util';
 import { LocalStorageKeys } from '../../Utilities/Constants';
 import { FcCalendar } from 'react-icons/fc';
 import useScreenSize from '../../Hooks/useScreenSize';
 
 const DentistCard: React.FC = () => {
   const { Option } = Select;
+  const customCardBodyStyle = {
+    display: 'flex',
+    height: '80%',
+    justifyContent: 'center',
+    alignItems: 'center'
+  };
 
   const ref1 = React.useRef(null);
   const ref2 = React.useRef(null);
@@ -145,6 +156,7 @@ const DentistCard: React.FC = () => {
               </Row>
             }
             headStyle={{ borderBottom: '2px solid lightgray' }}
+            bodyStyle={bookings?.length > 0 ? customCardBodyStyle : {}}
             style={{ width: 300, textAlign: 'center', cursor: 'pointer' }}
             className='customCard'
             onClick={() => {
@@ -236,13 +248,10 @@ const DentistCard: React.FC = () => {
                     title='Delete Booking'
                     icon={<WarningOutlined />}
                     description='Are you sure you want to delete this booking?'
-                    onConfirm={() =>
-                      new Promise((resolve) => {
-                        setTimeout(() => resolve(null), 3000);
-                      }).then(() => {
-                        dispatch(deleteBooking(myBooking.id));
-                      })
-                    }
+                    onConfirm={async () => {
+                      await deleteDocument('bookings', myBooking.id);
+                      dispatch(deleteBooking(myBooking.id));
+                    }}
                     okText={'Yes'}
                     cancelText={'No'}
                     cancelButtonProps={{ className: 'defaultButton' }}
@@ -302,7 +311,12 @@ const DentistCard: React.FC = () => {
                         </Col>
                       </Row>
                     }
-                    description={`Booking Date: ${myBooking.time}`}
+                    description={
+                      <>
+                        <p>{`Booking Date: ${myBooking.date}`}</p>
+                        <p>{`Booking Time: ${myBooking.time}`}</p>
+                      </>
+                    }
                   />
                   <Typography.Link
                     onClick={() => {
@@ -365,18 +379,35 @@ const DentistCard: React.FC = () => {
           cancelButtonProps={{ className: 'defaultButton' }}
           onOk={() => {
             setEditConfirmLoading(true);
-            setTimeout(() => {
-              setEditConfirmLoading(false);
-              setEditModalOpen(false);
-              dispatch(
-                chnageBookingDescription({
-                  data: descText,
-                  id: booking.id
-                })
-              );
-              // show error notification on catch or something
-              openNotificationWithIcon('success', api, 'edited', 'description');
-            }, 2000);
+            addOrEditDoc('edit', 'bookings', booking.id, {
+              description: descText
+            })
+              .then(() => {
+                dispatch(
+                  chnageBookingDescription({
+                    data: descText,
+                    id: booking.id
+                  })
+                );
+                openNotificationWithIcon(
+                  'success',
+                  api,
+                  'edited',
+                  'description'
+                );
+                setEditModalOpen(false);
+              })
+              .catch(() => {
+                api.error({
+                  message: 'Edit Failed',
+                  description:
+                    'Failed to Edit The Description, Please try again later',
+                  placement: 'top'
+                });
+              })
+              .finally(() => {
+                setEditConfirmLoading(false);
+              });
           }}
           onCancel={() => {
             setEditModalOpen(false);
@@ -400,28 +431,35 @@ const DentistCard: React.FC = () => {
         onOk={() => {
           form
             .validateFields()
-            .then((values) => {
-              setNewConfirmLoading(true);
-              setTimeout(() => {
-                form.resetFields();
-                setNewModalOpen(false);
-                setNewConfirmLoading(false);
-                const newId = uuidv4();
-                const result: Booking = {
+            .then(async (values) => {
+              try {
+                setNewConfirmLoading(true);
+                const result: Omit<Booking, 'id'> = {
                   dentist: dentists.find((el) => el.id === values.dentist),
                   patient: patient.info,
                   title: values.title,
                   description: values.description,
-                  id: newId,
                   severity: values.severity,
                   status: 'pending',
                   reply: '',
-                  time: values.date.format('YYYY-MM-DD')
+                  date: values.date.format('YYYY-MM-DD'),
+                  time: values.time.format('HH:mm')
                 };
-                dispatch(addBooking(result));
+                const ref = await addDocWithoutId('bookings', result);
+                dispatch(addBooking({ ...result, id: ref.id }));
                 openNotificationWithIcon('success', api, 'added', 'booking');
-                // error notifaction on failed or something
-              }, 2000);
+                form.resetFields();
+                setNewModalOpen(false);
+                setNewConfirmLoading(false);
+              } catch (error) {
+                api['error']({
+                  message: 'Booking Failed',
+                  description:
+                    'Failed to add your booking, Please try again later',
+                  placement: 'top'
+                });
+              }
+              // error notifaction on failed or something
             })
             .catch((info) => {
               console.log('Validate Failed:', info);
@@ -479,6 +517,20 @@ const DentistCard: React.FC = () => {
               disabledDate={(current) => {
                 return current && current.valueOf() < Date.now();
               }}
+            />
+          </Form.Item>
+          <Form.Item
+            name='time'
+            label='Time'
+            rules={[
+              { required: true, message: 'Please pick your booking time!' }
+            ]}
+          >
+            <TimePicker
+              style={{ width: '100%' }}
+              placeholder='Select Time (Hour/Minute)'
+              format='HH:mm'
+              minuteStep={15}
             />
           </Form.Item>
           <Form.Item

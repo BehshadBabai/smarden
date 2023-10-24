@@ -13,9 +13,10 @@ export type Booking = {
   title: string;
   description: string;
   reply: string;
-  time: string;
+  date: string;
   id: string;
   status: BookingStatus;
+  time: string;
 };
 
 export type AccountState = {
@@ -44,6 +45,9 @@ const accountSlice = createSlice({
     },
     toggleHasAccount(state) {
       state.hasAccount = !state.hasAccount;
+    },
+    setBookings(state, action: PayloadAction<Booking[]>) {
+      state.bookings = action.payload;
     },
     addBooking(state, action: PayloadAction<Booking>) {
       state.bookings = [...state.bookings, action.payload];
@@ -95,6 +99,7 @@ export const {
   deleteBooking,
   changeBookingStatus,
   chnageBookingDescription,
-  changeBookingReply
+  changeBookingReply,
+  setBookings
 } = accountSlice.actions;
 export default accountSlice.reducer;
