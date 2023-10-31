@@ -14,6 +14,7 @@ import { themeConstant } from './Utilities/Constants';
 import { useDispatch } from 'react-redux';
 import { changeAllDentists } from './Redux/features/app/app-slice';
 import { fetchAllDocuments } from './Utilities/Util';
+import ForgotPassword from './Pages/ForgotPassword';
 
 const { Content } = Layout;
 
@@ -86,6 +87,7 @@ const App = () => {
                 <Route path='patients' element={<Contacts />} />
                 <Route path='booking' element={<Booking />} />
                 <Route path='feedback' element={<Feedback />} />
+                <Route path='forgotpassword' element={<ForgotPassword />} />
                 <Route path='404' element={<NoPage />} />
                 <Route path='*' element={<NoPage />} />
               </Routes>

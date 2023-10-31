@@ -18,6 +18,7 @@ import { useNavigate } from 'react-router-dom';
 import { auth } from '../../Firebase/firebase';
 import { signInWithEmailAndPassword } from 'firebase/auth';
 import { firebaseErrorCodes } from '../../Utilities/Constants';
+import { Link } from 'react-router-dom';
 
 const AccountLogin: React.FC = () => {
   const account = useAppSelector((state) => state.account);
@@ -79,9 +80,9 @@ const AccountLogin: React.FC = () => {
               <Checkbox>Remember me</Checkbox>
             </Form.Item>
 
-            <a className='login-form-forgot' href=''>
+            <Link className='login-form-forgot' to='./forgotpassword'>
               Forgot password
-            </a>
+            </Link>
           </Row>
         </Form.Item>
 
