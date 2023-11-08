@@ -39,7 +39,7 @@ const FeedBack: React.FC = () => {
   const onFinish = (values: any) => {
     setSubmitLoading(true);
     axios
-      .post('https://email-server-x5ax.onrender.com/sendemail', {
+      .post('https://app-acz3khlqkq-uc.a.run.app/sendemail', {
         data: {
           name: values?.user?.name,
           email: values?.user?.email,
@@ -48,10 +48,7 @@ const FeedBack: React.FC = () => {
           rate: String(values?.rate)
         },
         type: 'sendgrid',
-        EMAIL_API_KEY: process.env.EMAIL_API_KEY,
-        EMAIL_TO: process.env.EMAIL_TO,
-        EMAIL_FROM: process.env.EMAIL_FROM,
-        TEMPLATE_ID: process.env.TEMPLATE_ID
+        appName: 'SMARDEN'
       })
       .then((response) => {
         if (response.data.status === 'success') {
