@@ -4,6 +4,7 @@ import PatientCard from '../Components/BookingParts/PatientCard';
 import DentistCard from '../Components/BookingParts/DentistCard';
 import { useNavigate } from 'react-router-dom';
 import { changeRoute } from '../Redux/features/app/app-slice';
+import { auth } from '../Firebase/firebase';
 
 const Booking: React.FC = () => {
   const account = useAppSelector((state) => state.account);
@@ -12,10 +13,12 @@ const Booking: React.FC = () => {
   const navigate = useNavigate();
 
   React.useEffect(() => {
-    if (!account.loggedIn) {
-      navigate('/');
-      dispatch(changeRoute('/'));
-    }
+    auth.onAuthStateChanged(async (firebaseUser) => {
+      if (!firebaseUser) {
+        dispatch(changeRoute('/'));
+        navigate('/');
+      }
+    });
   }, []);
 
   return account.loggedIn ? (
