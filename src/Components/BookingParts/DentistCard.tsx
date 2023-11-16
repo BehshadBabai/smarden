@@ -49,6 +49,7 @@ import {
 import { LocalStorageKeys } from '../../Utilities/Constants';
 import { FcCalendar } from 'react-icons/fc';
 import useScreenSize from '../../Hooks/useScreenSize';
+import { Link } from 'react-router-dom';
 
 const DentistCard: React.FC = () => {
   const { Option } = Select;
@@ -165,8 +166,12 @@ const DentistCard: React.FC = () => {
               } else {
                 Modal.error({
                   title: 'Unable to add a new booking',
-                  content:
-                    'Please add a dentist to your account first via the dentists page!'
+                  content: (
+                    <p>
+                      Please add a dentist to your account first via the{' '}
+                      <a href={'./dentists'}>dentists</a> page!
+                    </p>
+                  )
                 });
               }
             }}
